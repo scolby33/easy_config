@@ -40,16 +40,19 @@ class EasyConfig(metaclass=_InheritDataclassForConfig):
 
         values = {}
         for field in dataclasses.fields(cls):
-            if field.type is int:
-                value = config.getint(cls.NAME, field.name)
-            elif field.type is float:
-                value = config.getfloat(cls.NAME, field.name)
-            elif field.type is bool:
-                value = config.getboolean(cls.NAME, field.name)
-            else:
-                value = field.type(config.get(cls.NAME, field.name))
+            try:
+                if field.type is int:
+                    value = config.getint(cls.NAME, field.name)
+                elif field.type is float:
+                    value = config.getfloat(cls.NAME, field.name)
+                elif field.type is bool:
+                    value = config.getboolean(cls.NAME, field.name)
+                else:
+                    value = field.type(config.get(cls.NAME, field.name))
 
-            values[field.name] = value
+                values[field.name] = value
+            except (configparser.NoSectionError, configparser.NoOptionError):
+                pass
 
         return values
 
