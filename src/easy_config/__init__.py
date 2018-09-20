@@ -1,5 +1,6 @@
 import configparser
 import dataclasses
+from distutils.util import strtobool
 import logging
 import os
 from pathlib import Path
@@ -63,7 +64,10 @@ class EasyConfig(metaclass=_InheritDataclassForConfig):
         for field in dataclasses.fields(cls):
             prefixed_field_name = f'{cls.NAME}_{field.name}'.upper()
             if prefixed_field_name in os.environ:
-                values[field.name] = field.type(os.environ[prefixed_field_name])
+                if field.type is bool:
+                    values[field.name] = field.type(strtobool(os.environ[prefixed_field_name]))
+                else:
+                    values[field.name] = field.type(os.environ[prefixed_field_name])
 
         return values
 
@@ -73,7 +77,11 @@ class EasyConfig(metaclass=_InheritDataclassForConfig):
         values = {}
         for field in dataclasses.fields(cls):
             if field.name in d:
-                values[field.name] = field.type(d[field.name])
+                if field.type is bool:
+                    values[field.name] = field.type(strtobool(d[field.name]))
+                else:
+                    values[field.name] = field.type(d[field.name])
+
         return values
 
     @classmethod
