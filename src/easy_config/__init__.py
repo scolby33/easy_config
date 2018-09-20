@@ -1,8 +1,11 @@
 import configparser
 import dataclasses
+import logging
 import os
 from pathlib import Path
 from typing import Any, Dict, Iterable, Optional, TextIO, Type, TypeVar, Union
+
+logger = logging.getLogger(__name__)
 
 T = TypeVar('T', bound='EasyConfig')
 
@@ -12,7 +15,7 @@ class _InheritDataclassForConfig(type):
     def __new__(meta, name, bases, attrs):
         for varname in meta.REQUIRED_CLASS_VARIABLES:
             if not varname in attrs:
-                # log missing varname
+                logger.debug('required class variable `%s` not present; not decorating as dataclass', varname)
                 break
         else:  # nobreak--nothing was missing
             return dataclasses.dataclass(super().__new__(meta, name, bases, attrs))
