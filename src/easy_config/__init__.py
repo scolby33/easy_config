@@ -10,12 +10,12 @@ logger = logging.getLogger(__name__)
 T = TypeVar('T', bound='EasyConfig')
 
 class _InheritDataclassForConfig(type):
-    REQUIRED_CLASS_VARIABLES = ['PRIORITY']
+    REQUIRED_CLASS_VARIABLES = ['FILES', 'NAME']
 
     def __new__(meta, name, bases, attrs):
         for varname in meta.REQUIRED_CLASS_VARIABLES:
             if not varname in attrs:
-                logger.debug('required class variable `%s` not present; not decorating as dataclass', varname)
+                logger.debug('required class variable `%s` not present for new class `%s`; not decorating as dataclass', varname, name)
                 break
         else:  # nobreak--nothing was missing
             return dataclasses.dataclass(super().__new__(meta, name, bases, attrs))
@@ -41,13 +41,13 @@ class EasyConfig(metaclass=_InheritDataclassForConfig):
         values = {}
         for field in dataclasses.fields(cls):
             if field.type is int:
-                value = config.getint('default', field.name)
+                value = config.getint(cls.NAME, field.name)
             elif field.type is float:
-                value = config.getfloat('default', field.name)
+                value = config.getfloat(cls.NAME, field.name)
             elif field.type is bool:
-                value = config.getboolean('default', field.name)
+                value = config.getboolean(cls.NAME, field.name)
             else:
-                value = config.get('default', field.name)
+                value = field.type(config.get(cls.NAME, field.name))
 
             values[field.name] = value
 
@@ -58,8 +58,9 @@ class EasyConfig(metaclass=_InheritDataclassForConfig):
         # load from the environment
         values = {}
         for field in dataclasses.fields(cls):
-            if field.name in os.environ:
-                values[field.name] = field.type(os.environ[field.name])
+            prefixed_field_name = f'{cls.NAME}_{field.name}'.upper()
+            if prefixed_field_name in os.environ:
+                values[field.name] = field.type(os.environ[prefixed_field_name])
 
         return values
 
@@ -75,8 +76,8 @@ class EasyConfig(metaclass=_InheritDataclassForConfig):
     @classmethod
     def load(cls: Type[T], additional_files: Optional[Iterable[Union[Path, TextIO]]]=None, *, parse_files: bool=True, parse_environment: bool=True, **kwargs) -> T:
         values = {}
-        if parse_files:
-            for f in cls.files:
+        if parse_files and cls.FILES:
+            for f in cls.FILES:
                 values.update(cls._load_file(f))
         if additional_files:
             for f in additional_files:
