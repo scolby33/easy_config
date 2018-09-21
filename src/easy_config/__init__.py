@@ -1,8 +1,8 @@
 import configparser
 import dataclasses
-from distutils.util import strtobool
 import logging
 import os
+from distutils.util import strtobool
 from pathlib import Path
 from typing import Any, Dict, Iterable, Optional, TextIO, Type, TypeVar, Union
 
