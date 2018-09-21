@@ -6,7 +6,7 @@ import logging
 import os
 from distutils.util import strtobool
 from pathlib import Path
-from typing import Any, Dict, Iterable, Optional, TextIO, Type, TypeVar, Union
+from typing import Any, Dict, Iterable, Mapping, Optional, TextIO, Type, TypeVar, Union
 
 logger = logging.getLogger(__name__)
 
@@ -97,8 +97,7 @@ class EasyConfig(metaclass=_InheritDataclassForConfig):
         return values
 
     @classmethod
-    def _load_dict(cls: Type[T], d: Dict[str, Any]) -> Dict[str, Any]:
-        # load from a dictionary
+    def _load_dict(cls: Type[T], d: Mapping[str, Any]) -> Dict[str, Any]:
         """Load configuration values from a passed-in mapping.
 
         Configuration values are extracted from the input mapping.
