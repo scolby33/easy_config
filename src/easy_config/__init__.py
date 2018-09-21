@@ -29,13 +29,26 @@ class _InheritDataclassForConfig(type):
 
 
 class EasyConfig(metaclass=_InheritDataclassForConfig):
-    def __init__(self):
+    """The parent class of all configuration classes."""
+
+    def __init__(self) -> None:
+        """Do not instantiate the base class.
+
+        :raises NotImplementedError: always; this class must be subclassed
+        """
         raise NotImplementedError(f'{self.__class__.__qualname__} must be subclassed')
 
     @classmethod
     def _load_file(cls: Type[T], config_file: Union[Path, TextIO]) -> Dict[str, Any]:
-        # Load a file
-        # Default using configparser, but override this to add other file types
+        """Load configuration values from a file.
+
+        This method parses ConfigParser-style INI files.
+        To parse other formats, subclass EasyConfig and override this method.
+
+        :param config_file: the file from which configuration will be read
+
+        :returns: a mapping from string configuration value names to their values
+        """
         config = configparser.ConfigParser()
         if isinstance(config_file, Path) or isinstance(config_file, str):
             config.read(config_file)
@@ -62,7 +75,16 @@ class EasyConfig(metaclass=_InheritDataclassForConfig):
 
     @classmethod
     def _load_environment(cls: Type[T]) -> Dict[str, Any]:
-        # load from the environment
+        """Load configuration values from the environment.
+
+        Configuration values are looked up in the environment by the concatenation of the value name and the NAME class
+        variable with an underscore separator.
+
+        For example, the configuration value "number" for an instance with the NAME "myprogram" will be loaded from the
+        environment variable "MYPROGRAM_NUMBER".
+
+        :returns: a mapping from string configuration value names to their values
+        """
         values = {}
         for field in dataclasses.fields(cls):
             prefixed_field_name = f'{cls.NAME}_{field.name}'.upper()
@@ -77,6 +99,14 @@ class EasyConfig(metaclass=_InheritDataclassForConfig):
     @classmethod
     def _load_dict(cls: Type[T], d: Dict[str, Any]) -> Dict[str, Any]:
         # load from a dictionary
+        """Load configuration values from a passed-in mapping.
+
+        Configuration values are extracted from the input mapping.
+        Only keys in the mapping that are valid configuration values names are returned, others are ignored.
+
+        :param d: the input mapping of string configuration value names to their values
+        :returns: a mapping from string configuration value names to their values
+        """
         return {
             field.name: field.type(d[field.name])
             for field in dataclasses.fields(cls)
@@ -85,6 +115,22 @@ class EasyConfig(metaclass=_InheritDataclassForConfig):
 
     @classmethod
     def load(cls: Type[T], additional_files: Optional[Iterable[Union[Path, TextIO]]]=None, *, parse_files: bool=True, parse_environment: bool=True, **kwargs) -> T:
+        """Load configuration values from multiple locations and create a new instance of the configuration class with those values.
+
+        Values are read in the following order. The last value read takes priority.
+
+        1. values from the files listed in the FILES class variable, in order
+        2. values from files passed in the additional_files parameter, in order
+        3. values from the environment
+        4. values passed as keyword arguments to this method (useful for values specified on the command line)
+
+        :param additional_files: files to be parsed in addition to those named in the FILES class variable; always parsed, no matter the value of the parse_files flag
+        :param parse_files: whether to parse files from the FILES class variable
+        :param parse_environment: whether to parse the environment for configuration values
+        :param kwargs: additional keyword arguments are passed through unchanged to the final configuration object
+
+        :returns: an instance of the configuration class loaded with the parsed values
+        """
         values = {}
         if parse_files and cls.FILES:
             for f in cls.FILES:
