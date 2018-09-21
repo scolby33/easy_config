@@ -150,9 +150,8 @@ class EasyConfig(metaclass=_InheritDataclassForConfig):
             else:
                 raise e
 
-    def dump(self):
-        # Write current config to a file or something
-        pass
+    def dump(self, fp: TextIO) -> None:
+        """Serialize all current configuration values to fp.
 
     def dumps(self):
         # Return current config as a string
