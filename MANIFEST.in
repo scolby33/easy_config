@@ -1,6 +1,7 @@
 graft src
 graft tests
 include .flake8
+include .travis.yml
 include codecov.yml
 include mypy.ini
 include tox.ini
