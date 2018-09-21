@@ -74,15 +74,11 @@ class EasyConfig(metaclass=_InheritDataclassForConfig):
     @classmethod
     def _load_dict(cls: Type[T], d: Dict[str, Any]) -> Dict[str, Any]:
         # load from a dictionary
-        values = {}
-        for field in dataclasses.fields(cls):
-            if field.name in d:
-                if field.type is bool:
-                    values[field.name] = field.type(strtobool(d[field.name]))
-                else:
-                    values[field.name] = field.type(d[field.name])
-
-        return values
+        return {
+                field.name: field.type(d[field.name])
+                for field in dataclasses.fields(cls)
+                if field.name in d
+                }
 
     @classmethod
     def load(cls: Type[T], additional_files: Optional[Iterable[Union[Path, TextIO]]]=None, *, parse_files: bool=True, parse_environment: bool=True, **kwargs) -> T:
