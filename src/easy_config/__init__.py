@@ -153,6 +153,6 @@ class EasyConfig(metaclass=_InheritDataclassForConfig):
     def dump(self, fp: TextIO) -> None:
         """Serialize all current configuration values to fp.
 
-    def dumps(self):
-        # Return current config as a string
-        pass
+        :param fp: a write()-supporting file-like object
+        """
+        raise NotImplementedError
