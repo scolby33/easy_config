@@ -16,7 +16,7 @@ class _InheritDataclassForConfig(type):
 
     def __new__(meta, name, bases, attrs):
         for varname in meta.REQUIRED_CLASS_VARIABLES:
-            if not varname in attrs:
+            if varname not in attrs:
                 logger.debug('required class variable `%s` not present for new class `%s`; not decorating as dataclass', varname, name)
                 break
         else:  # nobreak--nothing was missing
