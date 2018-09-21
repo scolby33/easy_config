@@ -2,6 +2,7 @@ graft src
 graft tests
 include .flake8
 include mypy.ini
+include tox.ini
 
 include *.rst
 
