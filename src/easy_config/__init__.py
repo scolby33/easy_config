@@ -6,7 +6,7 @@ import logging
 import os
 from distutils.util import strtobool
 from pathlib import Path
-from typing import Any, Dict, Iterable, Mapping, Optional, TextIO, Type, TypeVar, Union
+from typing import Any, Dict, Iterable, Mapping, Optional, TextIO, Tuple, Type, TypeVar, Union
 
 logger = logging.getLogger(__name__)
 
@@ -16,16 +16,16 @@ T = TypeVar('T', bound='EasyConfig')
 class _InheritDataclassForConfig(type):
     REQUIRED_CLASS_VARIABLES = ['FILES', 'NAME']
 
-    def __new__(meta, name, bases, attrs):  # noqa: N804
-        for varname in meta.REQUIRED_CLASS_VARIABLES:
+    def __new__(mcs, name: str, bases: Tuple[Type[type]], attrs: Dict[str, Any]) -> Type[type]:  # noqa: N804
+        for varname in mcs.REQUIRED_CLASS_VARIABLES:
             if varname not in attrs:
                 logger.debug('required class variable `%s` not present for new class `%s`; not decorating as dataclass', varname, name)
                 break
         else:  # nobreak--nothing was missing
-            return dataclasses.dataclass(super().__new__(meta, name, bases, attrs))
+            return dataclasses.dataclass(super().__new__(mcs, name, bases, attrs))
 
         # did break--something was missing
-        return super().__new__(meta, name, bases, attrs)
+        return super().__new__(mcs, name, bases, attrs)
 
 
 class EasyConfig(metaclass=_InheritDataclassForConfig):
