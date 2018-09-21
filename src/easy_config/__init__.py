@@ -10,6 +10,7 @@ logger = logging.getLogger(__name__)
 
 T = TypeVar('T', bound='EasyConfig')
 
+
 class _InheritDataclassForConfig(type):
     REQUIRED_CLASS_VARIABLES = ['FILES', 'NAME']
 
@@ -75,10 +76,10 @@ class EasyConfig(metaclass=_InheritDataclassForConfig):
     def _load_dict(cls: Type[T], d: Dict[str, Any]) -> Dict[str, Any]:
         # load from a dictionary
         return {
-                field.name: field.type(d[field.name])
-                for field in dataclasses.fields(cls)
-                if field.name in d
-                }
+            field.name: field.type(d[field.name])
+            for field in dataclasses.fields(cls)
+            if field.name in d
+        }
 
     @classmethod
     def load(cls: Type[T], additional_files: Optional[Iterable[Union[Path, TextIO]]]=None, *, parse_files: bool=True, parse_environment: bool=True, **kwargs) -> T:
@@ -108,4 +109,3 @@ class EasyConfig(metaclass=_InheritDataclassForConfig):
     def dumps(self):
         # Return current config as a string
         pass
-
