@@ -1,3 +1,5 @@
+"""Parse configuration values from files, the environment, and elsewhere all in one place."""
+
 import configparser
 import dataclasses
 import logging
