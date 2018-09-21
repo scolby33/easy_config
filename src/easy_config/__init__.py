@@ -14,7 +14,7 @@ T = TypeVar('T', bound='EasyConfig')
 class _InheritDataclassForConfig(type):
     REQUIRED_CLASS_VARIABLES = ['FILES', 'NAME']
 
-    def __new__(meta, name, bases, attrs):
+    def __new__(meta, name, bases, attrs):  # noqa: N804
         for varname in meta.REQUIRED_CLASS_VARIABLES:
             if varname not in attrs:
                 logger.debug('required class variable `%s` not present for new class `%s`; not decorating as dataclass', varname, name)
