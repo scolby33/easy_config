@@ -97,6 +97,17 @@ def test_load_with_default_files(example_ini):
     assert a.word == 'hello'
 
 
+def test_load_raises_plain_type_error():
+    """Test that EasyConfig.load properly re-raises a TypeError not related to the number of arguments."""
+    class ExampleWithTypeErrorInit(ExampleConfig):
+        def __init__(self, *_args, **_kwargs):
+            raise TypeError('testing type error')
+
+    with pytest.raises(TypeError) as excinfo:
+        ExampleWithTypeErrorInit.load()
+    assert str(excinfo.value) == 'testing type error'
+
+
 def test_dump():
     """Test EasyConfig.dump to a file."""
     a = ExampleConfig.load(number=3, floaty_number=5.0, flag=False, word='hello')
