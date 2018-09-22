@@ -8,6 +8,10 @@ class ExampleConfig(EasyConfig):
     NAME = 'MyProgram'
 
     number: int
+    floaty_number: float
+    flag: bool
+    word: str
+
 
 
 def test_load_file(example_ini):
