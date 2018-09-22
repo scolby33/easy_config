@@ -7,6 +7,8 @@ from easy_config import EasyConfig
 
 
 class ExampleConfig(EasyConfig):
+    """Example EasyConfig subclass to test with."""
+
     FILES = None
     NAME = 'MyProgram'
 
@@ -17,11 +19,13 @@ class ExampleConfig(EasyConfig):
 
 
 def test_unsubclassed_easy_config_raises():
+    """Test that a plain EasyConfig can't be instantiated."""
     with pytest.raises(NotImplementedError):
         EasyConfig()
 
 
 def test_load_file(example_ini):
+    """Test EasyConfig._load_file functionality with all permutations of input types."""
     result = {
         'number': 3,
         'floaty_number': 5.0,
@@ -41,14 +45,17 @@ def test_load_file(example_ini):
 
 
 def test_load_environment(example_env):
+    """Test EasyConfig._load_environment."""
     assert ExampleConfig._load_environment() == {'number': 4, 'flag': True}
 
 
 def test_load_dict():
+    """Test EasyConfig._load_dict."""
     assert ExampleConfig._load_dict({'number': '3', 'unused': 'foo'}) == {'number': 3}
 
 
 def test_load(example_ini, example_env):
+    """Test EasyConfig.load."""
     a = ExampleConfig.load([example_ini], parse_environment=False)
     assert a.number == 3
     assert a.floaty_number == 5.0
@@ -74,5 +81,5 @@ def test_load(example_ini, example_env):
     assert d.word == 'world'
 
     with pytest.raises(TypeError) as excinfo:
-        e = ExampleConfig.load(parse_environment=False)
+        ExampleConfig.load(parse_environment=False)
     assert str(excinfo.value) == 'missing some configuration values'
