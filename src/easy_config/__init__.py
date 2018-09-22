@@ -150,8 +150,12 @@ class EasyConfig(metaclass=_InheritDataclassForConfig):
                 raise e
 
     def dump(self, fp: TextIO) -> None:
-        """Serialize all current configuration values to fp.
+        """Serialize all current configuration values to fp as a ConfigParser-style INI.
+
+        Values will be placed in the section corresponding to the class value NAME.
 
         :param fp: a write()-supporting file-like object
         """
-        raise NotImplementedError
+        config = configparser.ConfigParser()
+        config[self.NAME] = dataclasses.asdict(self)
+        config.write(fp)

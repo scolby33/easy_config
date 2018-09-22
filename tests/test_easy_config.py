@@ -95,3 +95,16 @@ def test_load_with_default_files(example_ini):
     assert a.floaty_number == 5.0
     assert a.flag is False
     assert a.word == 'hello'
+
+
+def test_dump():
+    """Test EasyConfig.dump to a file."""
+    a = ExampleConfig.load(number=3, floaty_number=5.0, flag=False, word='hello')
+    output = StringIO()
+    a.dump(output)
+    output_lines = output.getvalue().splitlines(keepends=True)
+    assert output_lines[0] == '[MyProgram]\n'
+    assert 'number = 3\n' in output_lines
+    assert 'floaty_number = 5.0\n' in output_lines
+    assert 'flag = False\n' in output_lines
+    assert 'word = hello\n' in output_lines
