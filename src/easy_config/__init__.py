@@ -113,7 +113,7 @@ class EasyConfig(metaclass=_InheritDataclassForConfig):
         }
 
     @classmethod
-    def load(cls: Type[T], additional_files: Optional[Iterable[Union[Path, TextIO]]]=None, *, parse_files: bool=True, parse_environment: bool=True, **kwargs) -> T:
+    def load(cls: Type[T], additional_files: Optional[Iterable[Union[Path, TextIO]]]=None, *, parse_files: bool=True, parse_environment: bool=True, **kwargs: Any) -> T:
         """Load configuration values from multiple locations and create a new instance of the configuration class with those values.
 
         Values are read in the following order. The last value read takes priority.
