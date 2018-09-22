@@ -11,3 +11,9 @@ def example_ini(tmpdir_factory) -> Path:
     with open(example_ini_path, 'w') as f:
         f.write(example_ini_contents)
     return Path(example_ini_path)
+
+
+@pytest.fixture(scope='session')
+def example_env():
+    os.environ['MYPROGRAM_NUMBER'] = '4'
+    os.environ['MYPROGRAM_FLAG'] = 'True'
