@@ -35,6 +35,8 @@ jobs:
     # test stage
     - stage: test
       env: TOXENV=py
+    - env: TOXENV=py
+      python: 3.6
 
 matrix:
   allow_failures:
