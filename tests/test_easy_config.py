@@ -83,3 +83,15 @@ def test_load(example_ini, example_env):
     with pytest.raises(TypeError) as excinfo:
         ExampleConfig.load(parse_environment=False)
     assert str(excinfo.value) == 'missing some configuration values'
+
+
+def test_load_with_default_files(example_ini):
+    """Test EasyConfig.load when the class FILES variable is populated."""
+    class ExampleWithFiles(ExampleConfig):
+        FILES = [example_ini]
+
+    a = ExampleWithFiles.load(parse_environment=False)
+    assert a.number == 3
+    assert a.floaty_number == 5.0
+    assert a.flag is False
+    assert a.word == 'hello'
