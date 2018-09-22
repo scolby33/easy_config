@@ -1,0 +1,11 @@
+[coverage:run]
+branch = True
+source = easy_config
+
+[coverage:paths]
+source =
+    src/easy_config
+    .tox/*/lib/python*/site-packages/easy_config
+
+[coverage:report]
+show_missing=True
