@@ -6,6 +6,12 @@ easy_config |python_versions| |license|
 .. |license| image:: https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square
     :target: LICENSE.rst
     :alt: MIT License
+.. |develop_build| image:: https://img.shields.io/travis/com/scolby33/easy_config/develop.svg?style=flat-square
+    :target: https://travis-ci.com/scolby33/easy_config
+    :alt: Develop Build Status
+.. |develop_coverage| image:: https://img.shields.io/codecov/c/github/scolby33/easy_config/develop.svg?style=flat-square
+    :target: https://codecov.io/gh/scolby33/easy_config/branch/develop
+    :alt: Develop Test Coverage
 
 Example
 -------
