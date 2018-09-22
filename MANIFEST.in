@@ -6,6 +6,7 @@ include .travis.yml
 include codecov.yml
 include mypy.ini
 include tox.ini
+include vulture_whitelist.py
 
 include *.rst
 
