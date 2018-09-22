@@ -6,7 +6,18 @@ import logging
 import os
 from distutils.util import strtobool
 from pathlib import Path
-from typing import Any, Dict, Iterable, Mapping, Optional, TextIO, Tuple, Type, TypeVar, Union
+from typing import (
+    Any,
+    Dict,
+    Iterable,
+    Mapping,
+    Optional,
+    TextIO,
+    Tuple,
+    Type,
+    TypeVar,
+    Union,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -16,10 +27,16 @@ T = TypeVar('T', bound='EasyConfig')
 class _InheritDataclassForConfig(type):
     REQUIRED_CLASS_VARIABLES = ['FILES', 'NAME']
 
-    def __new__(mcs, name: str, bases: Tuple[Type[type]], attrs: Dict[str, Any]) -> Type[type]:  # noqa: N804
+    def __new__(   # noqa: N804
+        mcs, name: str, bases: Tuple[Type[type]], attrs: Dict[str, Any]
+    ) -> Type[type]:
         for varname in mcs.REQUIRED_CLASS_VARIABLES:
             if varname not in attrs:
-                logger.debug('required class variable `%s` not present for new class `%s`; not decorating as dataclass', varname, name)
+                logger.debug(
+                    'required class variable `%s` not present for new class `%s`; not decorating as dataclass',
+                    varname,
+                    name,
+                )
                 break
         else:  # nobreak--nothing was missing
             return dataclasses.dataclass(super().__new__(mcs, name, bases, attrs))
@@ -90,7 +107,9 @@ class EasyConfig(metaclass=_InheritDataclassForConfig):
             prefixed_field_name = f'{cls.NAME}_{field.name}'.upper()
             if prefixed_field_name in os.environ:
                 if field.type is bool:
-                    values[field.name] = field.type(strtobool(os.environ[prefixed_field_name]))
+                    values[field.name] = field.type(
+                        strtobool(os.environ[prefixed_field_name])
+                    )
                 else:
                     values[field.name] = field.type(os.environ[prefixed_field_name])
 
@@ -113,7 +132,14 @@ class EasyConfig(metaclass=_InheritDataclassForConfig):
         }
 
     @classmethod
-    def load(cls: Type[T], additional_files: Optional[Iterable[Union[Path, TextIO]]]=None, *, parse_files: bool=True, parse_environment: bool=True, **kwargs: Any) -> T:
+    def load(
+        cls: Type[T],
+        additional_files: Optional[Iterable[Union[Path, TextIO]]] = None,
+        *,
+        parse_files: bool = True,
+        parse_environment: bool = True,
+        **kwargs: Any,
+    ) -> T:
         """Load configuration values from multiple locations and create a new instance of the configuration class with those values.
 
         Values are read in the following order. The last value read takes priority.

@@ -26,12 +26,7 @@ def test_unsubclassed_easy_config_raises():
 
 def test_load_file(example_ini):
     """Test EasyConfig._load_file functionality with all permutations of input types."""
-    result = {
-        'number': 3,
-        'floaty_number': 5.0,
-        'flag': False,
-        'word': 'hello',
-    }
+    result = {'number': 3, 'floaty_number': 5.0, 'flag': False, 'word': 'hello'}
     assert ExampleConfig._load_file(example_ini) == result
     assert ExampleConfig._load_file(str(example_ini)) == result
     with open(example_ini, 'r') as f:
