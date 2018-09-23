@@ -16,7 +16,9 @@ easy_config |python_versions| |license| |develop_build| |develop_coverage|
 Example
 -------
 
-Here is a full working example of using easy_config. First, write your configuration class::
+Here is a full working example of using easy_config. First, write your configuration class:
+
+.. code-block:: python
 
    # config.py
    from easy_config import EasyConfig
@@ -30,14 +32,18 @@ Here is a full working example of using easy_config. First, write your configura
       name: str
       check_bounds: bool = True  # options with defaults must all come after non-default options
 
-A sample configuration file::
+A sample configuration file:
+
+.. code-block:: ini
 
    # myprogram.ini
    [MyProgram]
    # section name matches `NAME` from the configuration class
    number = 3
 
-And a sample program to illustrate the usage::
+And a sample program to illustrate the usage:
+
+.. code-block:: python
 
    # test_config.py
    import sys
@@ -46,13 +52,17 @@ And a sample program to illustrate the usage::
 
    print(MyProgramConfig.load(name=sys.argv[1])
 
-Running this program with various options::
+Running this program with various options:
+
+.. code-block:: bash
 
    $ python test_config.py Scott
    MyProgramConfig(number=3, name='Scott', check_bounds=True)
+
    $ env MYPROGRAM_CHECK_BOUNDS=False python test_config.py Scott
    # environment variable names are the all-uppercase transformation of the NAME concatenated with the option name and an underscore
    MyProgramConfig(number=3, name='Scott', check_bounds=False)
+
    $ env MYPROGRAM_NUMBER=10 MYPROGRAM_NAME=Charlie python test_config.py Scott
    MyProgramConfig(number=10, name='Scott', check_bounds=True)
 
