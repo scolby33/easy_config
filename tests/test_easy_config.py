@@ -1,4 +1,7 @@
+# -*- coding: utf-8 -*-
+
 """Tests for the EasyConfig class."""
+
 from io import StringIO
 
 import pytest

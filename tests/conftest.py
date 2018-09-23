@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 """Test configuration module for easy_config."""
 
 import os
