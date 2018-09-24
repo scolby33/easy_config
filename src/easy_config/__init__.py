@@ -29,7 +29,7 @@ T = TypeVar('T', bound='EasyConfig')
 class _InheritDataclassForConfig(type):
     REQUIRED_CLASS_VARIABLES = ['FILES', 'NAME']
 
-    def __new__(   # noqa: N804
+    def __new__(  # noqa: N804
         mcs, name: str, bases: Tuple[Type[type]], attrs: Dict[str, Any]
     ) -> Type[type]:
         for varname in mcs.REQUIRED_CLASS_VARIABLES:
