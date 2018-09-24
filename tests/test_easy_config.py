@@ -88,7 +88,7 @@ def test_load_with_default_files(example_ini):
     class ExampleWithFiles(ExampleConfig):
         FILES = [example_ini]
 
-    a = ExampleWithFiles._load(parse_environment=False)
+    a = ExampleWithFiles.load(parse_environment=False)
     assert a.number == 3
     assert a.floaty_number == 5.0
     assert a.flag is False
@@ -102,13 +102,13 @@ def test_load_raises_plain_type_error():
             raise TypeError('testing type error')
 
     with pytest.raises(TypeError) as excinfo:
-        ExampleWithTypeErrorInit._load()
+        ExampleWithTypeErrorInit.load()
     assert str(excinfo.value) == 'testing type error'
 
 
 def test_dump():
     """Test EasyConfig.dump to a file."""
-    a = ExampleConfig._load(number=3, floaty_number=5.0, flag=False, word='hello')
+    a = ExampleConfig.load(number=3, floaty_number=5.0, flag=False, word='hello')
     output = StringIO()
     a.dump(output)
     output_lines = output.getvalue().splitlines(keepends=True)
