@@ -140,6 +140,7 @@ class EasyConfig(metaclass=_InheritDataclassForConfig):
         *,
         _parse_files: bool = True,
         _parse_environment: bool = True,
+        _lookup_config_envvar: Optional[str] = None,
         **kwargs: Any,
     ) -> T:
         """Load configuration values from multiple locations and create a new instance of the configuration class with those values.
@@ -165,6 +166,10 @@ class EasyConfig(metaclass=_InheritDataclassForConfig):
         if _additional_files:
             for f in _additional_files:
                 values.update(cls._load_file(f))
+        if _lookup_config_envvar is not None:
+            envvar = f'{cls.NAME.upper()}_{_lookup_config_envvar.upper()}'
+            f = os.environ[envvar]
+            values.update(cls._load_file(f))
         if _parse_environment:
             values.update(cls._load_environment())
         values.update(cls._load_dict(kwargs))

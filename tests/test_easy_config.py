@@ -2,6 +2,7 @@
 
 """Tests for the EasyConfig class."""
 
+import os
 from io import StringIO
 
 import pytest
@@ -49,8 +50,11 @@ def test_load_environment(example_env):
 
 def test_load_from_env(example_config_env):
     """Test EasyConfig._load_environment."""
-    a = ExampleConfig.load(parse_files=False)
-    assert a.number == 3
+    assert 'MYPROGRAM_FLAG' not in os.environ
+    assert 'MYPROGRAM_NUMBER' not in os.environ
+
+    a = ExampleConfig.load(parse_files=False, _lookup_config_envvar='config')
+    assert a.number == 4
     assert a.floaty_number == 5.0
     assert a.flag is False
     assert a.word == 'hello'
