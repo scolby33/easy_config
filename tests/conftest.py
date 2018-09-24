@@ -21,14 +21,19 @@ def example_ini(tmpdir_factory) -> Path:
     return Path(example_ini_path)
 
 
-@pytest.fixture(scope='session')
+@pytest.fixture(scope='function')
 def example_env():
     """Add example values to the environment."""
     os.environ['MYPROGRAM_NUMBER'] = '4'
     os.environ['MYPROGRAM_FLAG'] = 'True'
+    yield  # cleanup of newenvironment variables is necessary
+    del os.environ['MYPROGRAM_NUMBER']
+    del os.environ['MYPROGRAM_FLAG']
 
 
-@pytest.fixture(scope='session')
+@pytest.fixture(scope='function')
 def example_config_env(example_ini):
     """Add example environ config."""
     os.environ['MYPROGRAM_CONFIG'] = str(example_ini)
+    yield
+    del os.environ['MYPROGRAM_CONFIG']
