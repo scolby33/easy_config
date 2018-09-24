@@ -54,7 +54,7 @@ def test_load_from_env(example_config_env):
     assert 'MYPROGRAM_NUMBER' not in os.environ
 
     a = ExampleConfig.load(parse_files=False, _lookup_config_envvar='config')
-    assert a.number == 4
+    assert a.number == 3
     assert a.floaty_number == 5.0
     assert a.flag is False
     assert a.word == 'hello'
