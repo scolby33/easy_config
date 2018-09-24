@@ -26,3 +26,9 @@ def example_env():
     """Add example values to the environment."""
     os.environ['MYPROGRAM_NUMBER'] = '4'
     os.environ['MYPROGRAM_FLAG'] = 'True'
+
+
+@pytest.fixture(scope='session')
+def example_env_2():
+    """Add example environ config."""
+    os.environ['MYPROGRAM_CONFIG'] = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'test_config.ini')
