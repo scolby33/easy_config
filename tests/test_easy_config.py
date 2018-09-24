@@ -60,6 +60,27 @@ def test_load_from_env(example_config_env):
     assert a.word == 'hello'
 
 
+def test_load_from_env_unset():
+    """Test failure when looking up a config file via an environment variable that isn't set."""
+    with pytest.raises(KeyError) as excinfo:
+        ExampleConfig.load(_lookup_config_envvar='config')
+    assert str(excinfo.value) == 'No value set for MYPROGRAM_CONFIG in environment'
+
+
+def test_load_from_env_empty(example_config_env_empty):
+    """Test failure when looking up a config file via an environment variable that is set to an empty string."""
+    with pytest.raises(ValueError) as excinfo:
+        ExampleConfig.load(_lookup_config_envvar='config')
+    assert str(excinfo.value) == 'Empty value set for MYPROGRAM_CONFIG in environment'
+
+
+def test_load_from_env_missing(example_config_env_missing):
+    """Test failure when looking up a config file via an environment variable that is set but missing"""
+    with pytest.raises(FileNotFoundError) as excinfo:
+        ExampleConfig.load(_lookup_config_envvar='config')
+    assert str(excinfo.value) == f'File set by config MYPROGRAM_CONFIG does not exist: {example_config_env_missing}'
+
+
 def test_load_dict():
     """Test EasyConfig._load_dict."""
     assert ExampleConfig._load_dict({'number': '3', 'unused': 'foo'}) == {'number': 3}
