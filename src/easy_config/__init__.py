@@ -173,19 +173,9 @@ class EasyConfig(metaclass=_InheritDataclassForConfig):
                 values.update(cls._load_file(f))
         if _lookup_config_envvar is not None:
             envvar = f'{cls.NAME.upper()}_{_lookup_config_envvar.upper()}'
-
-            try:
-                f = os.environ[envvar]
-            except KeyError as e:
-                raise KeyError(f'No value set for {envvar} in environment') from e
-
-            if not f:
-                raise ValueError(f'Empty value set for {envvar} in environment')
-
-            if not os.path.exists(f):
-                raise FileNotFoundError(f'File set by config {envvar} does not exist: {str(f)}')
-
-            values.update(cls._load_file(f))
+            f = os.environ.get(envvar)
+            if f:
+                values.update(cls._load_file(f))
         if _parse_environment:
             values.update(cls._load_environment())
         values.update(cls._load_dict(kwargs))

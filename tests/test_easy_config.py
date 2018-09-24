@@ -49,7 +49,7 @@ def test_load_environment(example_env):
 
 
 def test_load_from_env(example_config_env):
-    """Test EasyConfig._load_environment."""
+    """Test EasyConfig._load with _lookup_config_envvar."""
     assert 'MYPROGRAM_FLAG' not in os.environ, 'This environment variable should have been cleaned up by pytest'
     assert 'MYPROGRAM_NUMBER' not in os.environ, 'This environment variable should have been cleaned up by pytest'
 
@@ -61,24 +61,30 @@ def test_load_from_env(example_config_env):
 
 
 def test_load_from_env_unset():
-    """Test failure when looking up a config file via an environment variable that isn't set."""
-    with pytest.raises(KeyError) as excinfo:
-        ExampleConfig.load(_lookup_config_envvar='config')
-    assert str(excinfo.value) == 'No value set for MYPROGRAM_CONFIG in environment'
+    """Test looking up a config file via an environment variable that isn't set."""
+    a = ExampleConfig.load(number=3, floaty_number=5, flag=False, word='hello', _lookup_config_envvar='config')
+    assert a.number == 3
+    assert a.floaty_number == 5.0
+    assert a.flag is False
+    assert a.word == 'hello'
 
 
 def test_load_from_env_empty(example_config_env_empty):
-    """Test failure when looking up a config file via an environment variable that is set to an empty string."""
-    with pytest.raises(ValueError) as excinfo:
-        ExampleConfig.load(_lookup_config_envvar='config')
-    assert str(excinfo.value) == 'Empty value set for MYPROGRAM_CONFIG in environment'
+    """Test looking up a config file via an environment variable that is set to an empty string."""
+    a = ExampleConfig.load(number=3, floaty_number=5, flag=False, word='hello', _lookup_config_envvar='config')
+    assert a.number == 3
+    assert a.floaty_number == 5.0
+    assert a.flag is False
+    assert a.word == 'hello'
 
 
 def test_load_from_env_missing(example_config_env_missing):
-    """Test failure when looking up a config file via an environment variable that is set but missing"""
-    with pytest.raises(FileNotFoundError) as excinfo:
-        ExampleConfig.load(_lookup_config_envvar='config')
-    assert str(excinfo.value) == f'File set by config MYPROGRAM_CONFIG does not exist: {example_config_env_missing}'
+    """Test looking up a config file via an environment variable that is set to a nonexistent file."""
+    a = ExampleConfig.load(number=3, floaty_number=5, flag=False, word='hello', _lookup_config_envvar='config')
+    assert a.number == 3
+    assert a.floaty_number == 5.0
+    assert a.flag is False
+    assert a.word == 'hello'
 
 
 def test_load_dict():
