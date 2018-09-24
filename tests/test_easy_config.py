@@ -88,7 +88,7 @@ def test_load_with_default_files(example_ini):
     class ExampleWithFiles(ExampleConfig):
         FILES = [example_ini]
 
-    a = ExampleWithFiles.load(parse_environment=False)
+    a = ExampleWithFiles.load(_parse_environment=False)
     assert a.number == 3
     assert a.floaty_number == 5.0
     assert a.flag is False
