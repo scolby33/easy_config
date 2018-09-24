@@ -47,9 +47,13 @@ def test_load_environment(example_env):
     assert ExampleConfig._load_environment() == {'number': 4, 'flag': True}
 
 
-def test_load_environment_from_env(example_env_2):
+def test_load_from_env(example_config_env):
     """Test EasyConfig._load_environment."""
-    assert ExampleConfig._load_environment() == {'number': 4, 'flag': True}
+    a = ExampleConfig.load(parse_files=False)
+    assert a.number == 3
+    assert a.floaty_number == 5.0
+    assert a.flag is False
+    assert a.word == 'hello'
 
 
 def test_load_dict():
