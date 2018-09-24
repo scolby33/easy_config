@@ -24,4 +24,4 @@ application-import-names = easy_config
 import-order-style = pycharm
 
 # mccabe
-max-complexity = 10
+max-complexity = 11
