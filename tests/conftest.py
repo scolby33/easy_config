@@ -26,7 +26,7 @@ def example_env():
     """Add example values to the environment."""
     os.environ['MYPROGRAM_NUMBER'] = '4'
     os.environ['MYPROGRAM_FLAG'] = 'True'
-    yield  # cleanup of newenvironment variables is necessary
+    yield  # cleanup of new environment variables is necessary
     del os.environ['MYPROGRAM_NUMBER']
     del os.environ['MYPROGRAM_FLAG']
 

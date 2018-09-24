@@ -50,8 +50,8 @@ def test_load_environment(example_env):
 
 def test_load_from_env(example_config_env):
     """Test EasyConfig._load_environment."""
-    assert 'MYPROGRAM_FLAG' not in os.environ
-    assert 'MYPROGRAM_NUMBER' not in os.environ
+    assert 'MYPROGRAM_FLAG' not in os.environ, 'This environment variable should have been cleaned up by pytest'
+    assert 'MYPROGRAM_NUMBER' not in os.environ, 'This environment variable should have been cleaned up by pytest'
 
     a = ExampleConfig.load(parse_files=False, _lookup_config_envvar='config')
     assert a.number == 3
