@@ -54,7 +54,7 @@ def test_load_dict():
 
 def test_load(example_ini, example_env):
     """Test EasyConfig.load."""
-    a = ExampleConfig.load([example_ini], parse_environment=False)
+    a = ExampleConfig.load([example_ini], _parse_environment=False)
     assert a.number == 3
     assert a.floaty_number == 5.0
     assert a.flag is False
@@ -66,7 +66,7 @@ def test_load(example_ini, example_env):
     assert b.flag is True
     assert b.word == 'hello'
 
-    c = ExampleConfig.load([example_ini], parse_environment=False, number=10)
+    c = ExampleConfig.load([example_ini], _parse_environment=False, number=10)
     assert c.number == 10
     assert c.floaty_number == 5.0
     assert c.flag is False
@@ -79,7 +79,7 @@ def test_load(example_ini, example_env):
     assert d.word == 'world'
 
     with pytest.raises(TypeError) as excinfo:
-        ExampleConfig.load(parse_environment=False)
+        ExampleConfig.load(_parse_environment=False)
     assert str(excinfo.value) == 'missing some configuration values'
 
 
@@ -88,7 +88,7 @@ def test_load_with_default_files(example_ini):
     class ExampleWithFiles(ExampleConfig):
         FILES = [example_ini]
 
-    a = ExampleWithFiles.load(parse_environment=False)
+    a = ExampleWithFiles._load(parse_environment=False)
     assert a.number == 3
     assert a.floaty_number == 5.0
     assert a.flag is False
@@ -102,13 +102,13 @@ def test_load_raises_plain_type_error():
             raise TypeError('testing type error')
 
     with pytest.raises(TypeError) as excinfo:
-        ExampleWithTypeErrorInit.load()
+        ExampleWithTypeErrorInit._load()
     assert str(excinfo.value) == 'testing type error'
 
 
 def test_dump():
     """Test EasyConfig.dump to a file."""
-    a = ExampleConfig.load(number=3, floaty_number=5.0, flag=False, word='hello')
+    a = ExampleConfig._load(number=3, floaty_number=5.0, flag=False, word='hello')
     output = StringIO()
     a.dump(output)
     output_lines = output.getvalue().splitlines(keepends=True)

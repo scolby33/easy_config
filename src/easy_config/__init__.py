@@ -136,10 +136,10 @@ class EasyConfig(metaclass=_InheritDataclassForConfig):
     @classmethod
     def load(
         cls: Type[T],
-        additional_files: Optional[Iterable[Union[Path, TextIO]]] = None,
+        _additional_files: Optional[Iterable[Union[Path, TextIO]]] = None,
         *,
-        parse_files: bool = True,
-        parse_environment: bool = True,
+        _parse_files: bool = True,
+        _parse_environment: bool = True,
         **kwargs: Any,
     ) -> T:
         """Load configuration values from multiple locations and create a new instance of the configuration class with those values.
@@ -151,21 +151,21 @@ class EasyConfig(metaclass=_InheritDataclassForConfig):
         3. values from the environment
         4. values passed as keyword arguments to this method (useful for values specified on the command line)
 
-        :param additional_files: files to be parsed in addition to those named in the FILES class variable; always parsed, no matter the value of the parse_files flag
-        :param parse_files: whether to parse files from the FILES class variable
-        :param parse_environment: whether to parse the environment for configuration values
+        :param _additional_files: files to be parsed in addition to those named in the FILES class variable; always parsed, no matter the value of the parse_files flag
+        :param _parse_files: whether to parse files from the FILES class variable
+        :param _parse_environment: whether to parse the environment for configuration values
         :param kwargs: additional keyword arguments are passed through unchanged to the final configuration object
 
         :returns: an instance of the configuration class loaded with the parsed values
         """
         values = {}
-        if parse_files and cls.FILES:
+        if _parse_files and cls.FILES:
             for f in cls.FILES:
                 values.update(cls._load_file(f))
-        if additional_files:
-            for f in additional_files:
+        if _additional_files:
+            for f in _additional_files:
                 values.update(cls._load_file(f))
-        if parse_environment:
+        if _parse_environment:
             values.update(cls._load_environment())
         values.update(cls._load_dict(kwargs))
 
