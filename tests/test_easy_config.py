@@ -50,8 +50,12 @@ def test_load_environment(example_env):
 
 def test_load_from_env(example_config_env):
     """Test EasyConfig._load with _lookup_config_envvar."""
-    assert 'MYPROGRAM_FLAG' not in os.environ, 'This environment variable should have been cleaned up by pytest'
-    assert 'MYPROGRAM_NUMBER' not in os.environ, 'This environment variable should have been cleaned up by pytest'
+    assert (
+        'MYPROGRAM_FLAG' not in os.environ
+    ), 'This environment variable should have been cleaned up by pytest'
+    assert (
+        'MYPROGRAM_NUMBER' not in os.environ
+    ), 'This environment variable should have been cleaned up by pytest'
 
     a = ExampleConfig.load(parse_files=False, _lookup_config_envvar='config')
     assert a.number == 3
@@ -62,7 +66,13 @@ def test_load_from_env(example_config_env):
 
 def test_load_from_env_unset():
     """Test looking up a config file via an environment variable that isn't set."""
-    a = ExampleConfig.load(number=3, floaty_number=5, flag=False, word='hello', _lookup_config_envvar='config')
+    a = ExampleConfig.load(
+        number=3,
+        floaty_number=5,
+        flag=False,
+        word='hello',
+        _lookup_config_envvar='config',
+    )
     assert a.number == 3
     assert a.floaty_number == 5.0
     assert a.flag is False
@@ -71,7 +81,13 @@ def test_load_from_env_unset():
 
 def test_load_from_env_empty(example_config_env_empty):
     """Test looking up a config file via an environment variable that is set to an empty string."""
-    a = ExampleConfig.load(number=3, floaty_number=5, flag=False, word='hello', _lookup_config_envvar='config')
+    a = ExampleConfig.load(
+        number=3,
+        floaty_number=5,
+        flag=False,
+        word='hello',
+        _lookup_config_envvar='config',
+    )
     assert a.number == 3
     assert a.floaty_number == 5.0
     assert a.flag is False
@@ -80,7 +96,13 @@ def test_load_from_env_empty(example_config_env_empty):
 
 def test_load_from_env_missing(example_config_env_missing):
     """Test looking up a config file via an environment variable that is set to a nonexistent file."""
-    a = ExampleConfig.load(number=3, floaty_number=5, flag=False, word='hello', _lookup_config_envvar='config')
+    a = ExampleConfig.load(
+        number=3,
+        floaty_number=5,
+        flag=False,
+        word='hello',
+        _lookup_config_envvar='config',
+    )
     assert a.number == 3
     assert a.floaty_number == 5.0
     assert a.flag is False
@@ -125,6 +147,7 @@ def test_load(example_ini, example_env):
 
 def test_load_with_default_files(example_ini):
     """Test EasyConfig.load when the class FILES variable is populated."""
+
     class ExampleWithFiles(ExampleConfig):
         FILES = [example_ini]
 
@@ -137,6 +160,7 @@ def test_load_with_default_files(example_ini):
 
 def test_load_raises_plain_type_error():
     """Test that EasyConfig.load properly re-raises a TypeError not related to the number of arguments."""
+
     class ExampleWithTypeErrorInit(ExampleConfig):
         def __init__(self, *_args, **_kwargs):
             raise TypeError('testing type error')

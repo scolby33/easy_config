@@ -50,6 +50,8 @@ def example_config_env_empty():
 @pytest.fixture(scope='function')
 def example_config_env_missing(tmpdir_factory):
     """Add environ config pointing to missing file."""
-    os.environ['MYPROGRAM_CONFIG'] = str(tmpdir_factory.mktemp('config').join('example.ini'))
+    os.environ['MYPROGRAM_CONFIG'] = str(
+        tmpdir_factory.mktemp('config').join('example.ini')
+    )
     yield os.environ['MYPROGRAM_CONFIG']
     del os.environ['MYPROGRAM_CONFIG']

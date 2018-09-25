@@ -62,7 +62,9 @@ class EasyConfig(metaclass=_InheritDataclassForConfig):
         raise NotImplementedError(f'{self.__class__.__qualname__} must be subclassed')
 
     @classmethod
-    def _load_file(cls: Type[T], config_file: Union[str, Path, Iterable[str]]) -> Dict[str, Any]:
+    def _load_file(
+        cls: Type[T], config_file: Union[str, Path, Iterable[str]]
+    ) -> Dict[str, Any]:
         """Load configuration values from a file.
 
         This method parses ConfigParser-style INI files.
