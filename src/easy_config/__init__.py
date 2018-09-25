@@ -62,21 +62,21 @@ class EasyConfig(metaclass=_InheritDataclassForConfig):
         raise NotImplementedError(f'{self.__class__.__qualname__} must be subclassed')
 
     @classmethod
-    def _load_file(cls: Type[T], config_file: Union[str, Path, TextIO]) -> Dict[str, Any]:
+    def _load_file(cls: Type[T], config_file: Union[str, Path, Iterable[str]]) -> Dict[str, Any]:
         """Load configuration values from a file.
 
         This method parses ConfigParser-style INI files.
         To parse other formats, subclass EasyConfig and override this method.
 
-        :param config_file: the file from which configuration will be read
+        :param config_file: the file from which configuration will be read. Note that this can be an Iterable[str],
+        which includes open files and TextIO objects.
 
         :returns: a mapping from string configuration value names to their values
         """
         config = configparser.ConfigParser()
-        if isinstance(config_file, (str, os.PathLike)):
+        if isinstance(config_file, (str, Path, os.PathLike)):
             config.read(config_file)
         else:
-            assert isinstance(config_file, TextIO)
             config.read_file(config_file)
 
         values = {}
