@@ -22,6 +22,21 @@ from typing import (
     Union,
 )
 
+
+# metadata
+__version__ = '0.1.0'
+
+__title__ = 'easy_config'
+# keep the __description__ synchronized with the package docstring
+__description__ = 'Parse configuration values from files, the environment, and elsewhere all in one place.'
+__url__ = 'https://github.com/scolby33/easy_config'
+
+__author__ = 'Scott Colby'
+__email__ = 'scolby33@gmail.com'
+
+__license__ = 'MIT'
+__copyright__ = 'Copyright (c) 2018 Scott Colby'
+
 logger = logging.getLogger(__name__)
 
 EasyConfigOrSubclass = TypeVar('EasyConfigOrSubclass', bound='EasyConfig')
