@@ -1,6 +1,7 @@
 graft src
 graft tests
 
+include .bumpversion.cfg
 include .coveragerc
 include .flake8
 include .travis.yml
