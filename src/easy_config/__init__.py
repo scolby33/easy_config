@@ -24,7 +24,7 @@ from typing import (
 
 logger = logging.getLogger(__name__)
 
-T = TypeVar('T', bound='EasyConfig')
+EasyConfigOrSubclass = TypeVar('EasyConfigOrSubclass', bound='EasyConfig')
 
 
 class _InheritDataclassForConfig(type):
@@ -63,7 +63,7 @@ class EasyConfig(metaclass=_InheritDataclassForConfig):
 
     @classmethod
     def _load_file(
-        cls: Type[T], config_file: Union[str, Path, Iterable[str]]
+        cls: Type[EasyConfigOrSubclass], config_file: Union[str, Path, Iterable[str]]
     ) -> Dict[str, Any]:
         """Load configuration values from a file.
 
@@ -101,7 +101,7 @@ class EasyConfig(metaclass=_InheritDataclassForConfig):
         return values
 
     @classmethod
-    def _load_environment(cls: Type[T]) -> Dict[str, Any]:
+    def _load_environment(cls: Type[EasyConfigOrSubclass]) -> Dict[str, Any]:
         """Load configuration values from the environment.
 
         Configuration values are looked up in the environment by the concatenation of the value name and the NAME class
@@ -126,7 +126,9 @@ class EasyConfig(metaclass=_InheritDataclassForConfig):
         return values
 
     @classmethod
-    def _load_dict(cls: Type[T], d: Mapping[str, Any]) -> Dict[str, Any]:
+    def _load_dict(
+        cls: Type[EasyConfigOrSubclass], d: Mapping[str, Any]
+    ) -> Dict[str, Any]:
         """Load configuration values from a passed-in mapping.
 
         Configuration values are extracted from the input mapping.
@@ -143,14 +145,14 @@ class EasyConfig(metaclass=_InheritDataclassForConfig):
 
     @classmethod
     def load(
-        cls: Type[T],
+        cls: Type[EasyConfigOrSubclass],
         _additional_files: Optional[Iterable[Union[str, Path, TextIO]]] = None,
         *,
         _parse_files: bool = True,
         _parse_environment: bool = True,
         _lookup_config_envvar: Optional[str] = None,
         **kwargs: Any,
-    ) -> T:
+    ) -> EasyConfigOrSubclass:
         """Load configuration values from multiple locations and create a new instance of the configuration class with those values.
 
         Values are read in the following order. The last value read takes priority.
