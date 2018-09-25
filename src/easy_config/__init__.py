@@ -12,6 +12,7 @@ from typing import (
     Any,
     Dict,
     Iterable,
+    List,
     Mapping,
     Optional,
     TextIO,
@@ -49,8 +50,10 @@ class _InheritDataclassForConfig(type):
 
 class EasyConfig(metaclass=_InheritDataclassForConfig):
     """The parent class of all configuration classes."""
+    NAME: str
+    FILES: List[Union[str, Path]]
 
-    def __init__(self) -> None:
+    def __init__(self, **_kwargs: Any) -> None:
         """Do not instantiate the base class.
 
         :raises NotImplementedError: always; this class must be subclassed
@@ -58,7 +61,7 @@ class EasyConfig(metaclass=_InheritDataclassForConfig):
         raise NotImplementedError(f'{self.__class__.__qualname__} must be subclassed')
 
     @classmethod
-    def _load_file(cls: Type[T], config_file: Union[Path, TextIO]) -> Dict[str, Any]:
+    def _load_file(cls: Type[T], config_file: Union[str, Path, TextIO]) -> Dict[str, Any]:
         """Load configuration values from a file.
 
         This method parses ConfigParser-style INI files.
@@ -69,14 +72,16 @@ class EasyConfig(metaclass=_InheritDataclassForConfig):
         :returns: a mapping from string configuration value names to their values
         """
         config = configparser.ConfigParser()
-        if isinstance(config_file, Path) or isinstance(config_file, str):
+        if isinstance(config_file, (str, os.PathLike)):
             config.read(config_file)
         else:
+            assert isinstance(config_file, TextIO)
             config.read_file(config_file)
 
         values = {}
         for field in dataclasses.fields(cls):
             try:
+                value: Any
                 if field.type is int:
                     value = config.getint(cls.NAME, field.name)
                 elif field.type is float:
@@ -136,7 +141,7 @@ class EasyConfig(metaclass=_InheritDataclassForConfig):
     @classmethod
     def load(
         cls: Type[T],
-        _additional_files: Optional[Iterable[Union[Path, TextIO]]] = None,
+        _additional_files: Optional[Iterable[Union[str, Path, TextIO]]] = None,
         *,
         _parse_files: bool = True,
         _parse_environment: bool = True,
@@ -166,16 +171,16 @@ class EasyConfig(metaclass=_InheritDataclassForConfig):
         """
         values = {}
         if _parse_files and cls.FILES:
-            for f in cls.FILES:
-                values.update(cls._load_file(f))
+            for file_paths in cls.FILES:
+                values.update(cls._load_file(file_paths))
         if _additional_files:
-            for f in _additional_files:
-                values.update(cls._load_file(f))
+            for files in _additional_files:
+                values.update(cls._load_file(files))
         if _lookup_config_envvar is not None:
             envvar = f'{cls.NAME.upper()}_{_lookup_config_envvar.upper()}'
-            f = os.environ.get(envvar)
-            if f:
-                values.update(cls._load_file(f))
+            file_name = os.environ.get(envvar)
+            if file_name:
+                values.update(cls._load_file(file_name))
         if _parse_environment:
             values.update(cls._load_environment())
         values.update(cls._load_dict(kwargs))
