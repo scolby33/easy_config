@@ -147,7 +147,6 @@ def test_load(example_ini, example_env):
 
 def test_load_with_default_files(example_ini):
     """Test EasyConfig.load when the class FILES variable is populated."""
-
     class ExampleWithFiles(ExampleConfig):
         FILES = [example_ini]
 
@@ -160,7 +159,6 @@ def test_load_with_default_files(example_ini):
 
 def test_load_raises_plain_type_error():
     """Test that EasyConfig.load properly re-raises a TypeError not related to the number of arguments."""
-
     class ExampleWithTypeErrorInit(ExampleConfig):
         def __init__(self, *_args, **_kwargs):
             raise TypeError('testing type error')
