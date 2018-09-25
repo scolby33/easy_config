@@ -50,6 +50,7 @@ class _InheritDataclassForConfig(type):
 
 class EasyConfig(metaclass=_InheritDataclassForConfig):
     """The parent class of all configuration classes."""
+
     NAME: str
     FILES: List[Union[str, Path]]
 
