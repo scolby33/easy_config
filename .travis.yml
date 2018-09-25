@@ -40,7 +40,6 @@ jobs:
 
 matrix:
   allow_failures:
-    - env: TOXENV=mypy
     - env: TOXENV=doc8
     - env: TOXENV=docs
 
