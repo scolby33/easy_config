@@ -3,7 +3,7 @@
 """A wrapper for generating options for a :mod:`click` command from an :class:`easy_config.EasyConfig`."""
 
 import dataclasses
-from typing import Callable, Type
+from typing import Any, Callable, Type
 
 import click
 
@@ -14,7 +14,7 @@ __all__ = [
 ]
 
 # A callable that can take in anything, but gives back nothing
-GenericCallable = Callable[..., None]
+GenericCallable = Callable[..., Any]
 
 
 def args_from_config(cls: Type[EasyConfig]) -> Callable[[GenericCallable], GenericCallable]:  # noqa: D202
