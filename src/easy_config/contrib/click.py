@@ -13,7 +13,8 @@ __all__ = [
     'args_from_config',
 ]
 
-# a callable that can take in anything and can give back anything
+# declaring types for the decorator
+# https://mypy.readthedocs.io/en/stable/generics.html#declaring-decorators
 FuncType = Callable[..., Any]
 F = TypeVar('F', bound=FuncType)
 
