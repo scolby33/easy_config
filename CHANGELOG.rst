@@ -3,6 +3,10 @@ Changelog
 
 Changes as of 25 September 2018
 
+0.2.1-dev
+^^^^^^^^^
+
+
 0.2.0 <26 September 2018>
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 - Add `contrib` package for containing functionality that interacts with other pacakges, especially those outside the stdlib (@cthoyt)
