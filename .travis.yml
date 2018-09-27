@@ -28,7 +28,7 @@ jobs:
 
     # docs stage
     - stage: docs
-    - env: TOXENV=rst-lint
+      env: TOXENV=rst-lint
     - env: TOXENV=doc8
     - env: TOXENV=docs
 
