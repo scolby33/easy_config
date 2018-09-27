@@ -1,11 +1,15 @@
 graft src
 graft tests
+graft docs
+
+prune docs/build
 
 include .bumpversion.cfg
 include .coveragerc
 include .flake8
 include .travis.yml
 include codecov.yml
+include doc8.ini
 include mypy.ini
 include tox.ini
 include vulture_whitelist.py
