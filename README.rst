@@ -16,7 +16,8 @@ easy_config |python_versions| |license| |develop_build| |develop_coverage|
 Example
 -------
 
-Here is a full working example of using easy_config. First, write your configuration class:
+Here is a full working example of using easy_config.
+First, write your configuration class:
 
 .. code-block:: python
 
@@ -66,7 +67,9 @@ Running this program with various options:
    $ env MYPROGRAM_NUMBER=10 MYPROGRAM_NAME=Charlie python test_config.py Scott
    MyProgramConfig(number=10, name='Scott', check_bounds=True)
 
-As you can see, values are taken in precedence, with arguments passed to ``load`` overriding values from the environment which, in turn, override values from configuration files.
+As you can see, values are taken in precedence, with arguments passed to ``load``
+overriding values from the environment which, in turn, override values from
+configuration files.
 
 Once you have the ``MyProgramConfig`` instance, you can use it just like any dataclass.
 
