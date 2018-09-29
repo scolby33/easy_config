@@ -6,6 +6,7 @@ import configparser
 import dataclasses
 import logging
 import os
+from collections import ChainMap
 from distutils.util import strtobool
 from pathlib import Path
 from typing import (
@@ -159,6 +160,32 @@ class EasyConfig(metaclass=_InheritDataclassForConfig):
         }
 
     @classmethod
+    def _load_helper(
+            cls: Type[EasyConfigOrSubclass],
+            _additional_files: Optional[Iterable[Union[str, Path, TextIO]]] = None,
+            *,
+            _parse_files: bool = True,
+            _parse_environment: bool = True,
+            _lookup_config_envvar: Optional[str] = None,
+            **kwargs: Any,
+    ) -> Iterable[Dict[str, Any]]:
+        if _parse_files and cls.FILES:
+            for file_paths in cls.FILES:
+                yield cls._load_file(file_paths)
+        if _additional_files:
+            for files in _additional_files:
+                yield cls._load_file(files)
+        if _lookup_config_envvar is not None:
+            envvar = f'{cls.NAME.upper()}_{_lookup_config_envvar.upper()}'
+            file_name = os.environ.get(envvar)
+            if file_name:
+                yield cls._load_file(file_name)
+        if _parse_environment:
+            yield cls._load_environment()
+
+        yield cls._load_dict(kwargs)
+
+    @classmethod
     def load(
         cls: Type[EasyConfigOrSubclass],
         _additional_files: Optional[Iterable[Union[str, Path, TextIO]]] = None,
@@ -189,21 +216,12 @@ class EasyConfig(metaclass=_InheritDataclassForConfig):
 
         :returns: an instance of the configuration class loaded with the parsed values
         """
-        values = {}
-        if _parse_files and cls.FILES:
-            for file_paths in cls.FILES:
-                values.update(cls._load_file(file_paths))
-        if _additional_files:
-            for files in _additional_files:
-                values.update(cls._load_file(files))
-        if _lookup_config_envvar is not None:
-            envvar = f'{cls.NAME.upper()}_{_lookup_config_envvar.upper()}'
-            file_name = os.environ.get(envvar)
-            if file_name:
-                values.update(cls._load_file(file_name))
-        if _parse_environment:
-            values.update(cls._load_environment())
-        values.update(cls._load_dict(kwargs))
+        values = ChainMap(*cls._load_helper(
+            _additional_files=_additional_files,
+            _parse_files=_parse_files,
+            _lookup_config_envvar=_lookup_config_envvar,
+            **kwargs
+        ))
 
         try:
             return cls(**values)
