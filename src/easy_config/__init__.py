@@ -160,7 +160,7 @@ class EasyConfig(metaclass=_InheritDataclassForConfig):
         }
 
     @classmethod
-    def _load_helper(
+    def load(
             cls: Type[EasyConfigOrSubclass],
             _additional_files: Optional[Iterable[Union[str, Path, TextIO]]] = None,
             *,
@@ -168,32 +168,6 @@ class EasyConfig(metaclass=_InheritDataclassForConfig):
             _parse_environment: bool = True,
             _lookup_config_envvar: Optional[str] = None,
             **kwargs: Any,
-    ) -> Iterable[Dict[str, Any]]:
-        if _parse_files and cls.FILES:
-            for file_paths in cls.FILES:
-                yield cls._load_file(file_paths)
-        if _additional_files:
-            for files in _additional_files:
-                yield cls._load_file(files)
-        if _lookup_config_envvar is not None:
-            envvar = f'{cls.NAME.upper()}_{_lookup_config_envvar.upper()}'
-            file_name = os.environ.get(envvar)
-            if file_name:
-                yield cls._load_file(file_name)
-        if _parse_environment:
-            yield cls._load_environment()
-
-        yield cls._load_dict(kwargs)
-
-    @classmethod
-    def load(
-        cls: Type[EasyConfigOrSubclass],
-        _additional_files: Optional[Iterable[Union[str, Path, TextIO]]] = None,
-        *,
-        _parse_files: bool = True,
-        _parse_environment: bool = True,
-        _lookup_config_envvar: Optional[str] = None,
-        **kwargs: Any,
     ) -> EasyConfigOrSubclass:
         """Load configuration values from multiple locations and create a new instance of the configuration class with those values.
 
@@ -230,6 +204,33 @@ class EasyConfig(metaclass=_InheritDataclassForConfig):
                 raise TypeError('missing some configuration values') from e
             else:
                 raise e
+
+    @classmethod
+    def _load_helper(
+            cls: Type[EasyConfigOrSubclass],
+            _additional_files: Optional[Iterable[Union[str, Path, TextIO]]] = None,
+            *,
+            _parse_files: bool = True,
+            _parse_environment: bool = True,
+            _lookup_config_envvar: Optional[str] = None,
+            **kwargs: Any,
+    ) -> Iterable[Dict[str, Any]]:
+        """Help load the dictionaries in .load()."""
+        if _parse_files and cls.FILES:
+            for file_paths in cls.FILES:
+                yield cls._load_file(file_paths)
+        if _additional_files:
+            for files in _additional_files:
+                yield cls._load_file(files)
+        if _lookup_config_envvar is not None:
+            envvar = f'{cls.NAME.upper()}_{_lookup_config_envvar.upper()}'
+            file_name = os.environ.get(envvar)
+            if file_name:
+                yield cls._load_file(file_name)
+        if _parse_environment:
+            yield cls._load_environment()
+
+        yield cls._load_dict(kwargs)
 
     def dump(self, fp: TextIO) -> None:
         """Serialize all current configuration values to fp as a ConfigParser-style INI.
