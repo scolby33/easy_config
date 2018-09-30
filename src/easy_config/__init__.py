@@ -193,6 +193,7 @@ class EasyConfig(metaclass=_InheritDataclassForConfig):
         values = ChainMap(*cls._load_helper(
             _additional_files=_additional_files,
             _parse_files=_parse_files,
+            _parse_environment=_parse_environment,
             _lookup_config_envvar=_lookup_config_envvar,
             **kwargs
         ))
@@ -216,21 +217,20 @@ class EasyConfig(metaclass=_InheritDataclassForConfig):
             **kwargs: Any,
     ) -> Iterable[Dict[str, Any]]:
         """Help load the dictionaries in .load()."""
-        if _parse_files and cls.FILES:
-            for file_paths in cls.FILES:
-                yield cls._load_file(file_paths)
-        if _additional_files:
-            for files in _additional_files:
-                yield cls._load_file(files)
+        yield cls._load_dict(kwargs)
+        if _parse_environment:
+            yield cls._load_environment()
         if _lookup_config_envvar is not None:
             envvar = f'{cls.NAME.upper()}_{_lookup_config_envvar.upper()}'
             file_name = os.environ.get(envvar)
             if file_name:
                 yield cls._load_file(file_name)
-        if _parse_environment:
-            yield cls._load_environment()
-
-        yield cls._load_dict(kwargs)
+        if _additional_files:
+            for files in _additional_files:
+                yield cls._load_file(files)
+        if _parse_files and cls.FILES:
+            for file_paths in reversed(cls.FILES):
+                yield cls._load_file(file_paths)
 
     def dump(self, fp: TextIO) -> None:
         """Serialize all current configuration values to fp as a ConfigParser-style INI.
