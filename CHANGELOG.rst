@@ -5,6 +5,8 @@ Changes as of 25 September 2018
 
 0.2.1-dev
 ^^^^^^^^^
+- Add docs
+- Use `ChainMap` instead of repeated `dict.update`'s in the loading code (@cthoyt)
 
 
 0.2.0 <26 September 2018>
