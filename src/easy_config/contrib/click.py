@@ -19,7 +19,7 @@ __all__ = [
 FuncType = Callable[..., Any]
 F = TypeVar('F', bound=FuncType)
 
-Func2Type = Callable[[Type[EasyConfig]], Any]
+Func2Type = Callable[[EasyConfig], Any]
 G = TypeVar('G', bound=Func2Type)
 
 
@@ -41,10 +41,10 @@ def args_from_config(cls: Type[EasyConfig]) -> Callable[[F], F]:  # noqa: D202
     return decorate
 
 
-def config_command(cls: Type[EasyConfig]) -> Callable[[G], G]:  # noqa: D202
+def config_command(cls: Type[EasyConfig]) -> Callable[[G], F]:  # noqa: D202
     """Build a decorator based on the given easy config class."""
 
-    def decorate(command: G) -> G:  # noqa: D202
+    def decorate(command: G) -> F:  # noqa: D202
         """Decorate the :mod:`click` command."""
 
         @args_from_config(cls)
@@ -52,6 +52,6 @@ def config_command(cls: Type[EasyConfig]) -> Callable[[G], G]:  # noqa: D202
             """Apply the keyword arguments to the EasyConfig class."""
             return command(cls.load(**kwargs))
 
-        return inner_decorate
+        return inner_decorate  # type: ignore
 
     return decorate
