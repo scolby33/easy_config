@@ -43,6 +43,15 @@ logger = logging.getLogger(__name__)
 EasyConfigOrSubclass = TypeVar('EasyConfigOrSubclass', bound='EasyConfig')
 
 
+class ConfigValueCoercionError(ValueError):
+    """Raised when a configuration value cannot be converted to the proper type.
+
+    Example: field type is ``int`` and the value is ``None`` or ``'apple'``.
+    """
+
+    pass
+
+
 class _InheritDataclassForConfig(type):
     REQUIRED_CLASS_VARIABLES = ['FILES', 'NAME']
 
@@ -117,6 +126,8 @@ class EasyConfig(metaclass=_InheritDataclassForConfig):
                 values[field.name] = value
             except (configparser.NoSectionError, configparser.NoOptionError):
                 pass
+            except (TypeError, ValueError) as e:
+                raise ConfigValueCoercionError(f'Could not coerce value for field `{field.name}` to type `{field.type}`') from e
 
         return values
 
@@ -144,6 +155,8 @@ class EasyConfig(metaclass=_InheritDataclassForConfig):
                     values[field.name] = field.type(os.environ[prefixed_field_name])
             except KeyError:  # the variable was not in the environment
                 pass
+            except (TypeError, ValueError) as e:
+                raise ConfigValueCoercionError(f'Could not coerce value for field `{field.name}` to type `{field.type}`') from e
 
         return values
 
@@ -159,11 +172,15 @@ class EasyConfig(metaclass=_InheritDataclassForConfig):
         :param d: the input mapping of string configuration value names to their values
         :returns: a mapping from string configuration value names to their values
         """
-        return {
-            field.name: field.type(d[field.name])
-            for field in dataclasses.fields(cls)
-            if field.name in d
-        }
+        values = {}
+        for field in dataclasses.fields(cls):
+            try:
+                if field.name in d:
+                    values[field.name] = field.type(d[field.name])
+            except (TypeError, ValueError) as e:
+                raise ConfigValueCoercionError(f'Could not coerce value for field `{field.name}` to type `{field.type}`') from e
+
+        return values
 
     @classmethod
     def load(
@@ -185,11 +202,12 @@ class EasyConfig(metaclass=_InheritDataclassForConfig):
         4. values from the environment
         5. values passed as keyword arguments to this method (useful for values specified on the command line)
 
-        :param _additional_files: files to be parsed in addition to those named in the FILES class variable; always parsed, no matter the value of the parse_files flag
+        :param _additional_files: files to be parsed in addition to those named in the FILES class variable;
+         always parsed, no matter the value of the parse_files flag
         :param _parse_files: whether to parse files from the FILES class variable
         :param _parse_environment: whether to parse the environment for configuration values
         :param _lookup_config_envvar: the environment variable that contains the config file location. Like the loading
-         from the environment, this value will be uppercased and post-pended to the program name. For example, the
+         from the environment, this value will be uppercased and appended to the program name. For example, the
          _lookup_config_envvar "config" for an instance with the NAME "myprogram" will result in a search for the
          environment variable "MYPROGRAM_CONFIG" for the path to the configuration file.
         :param kwargs: additional keyword arguments are passed through unchanged to the final configuration object
