@@ -145,7 +145,7 @@ latex_documents = [
     (
         master_doc,
         'easy_config.tex',
-        'easy\\_config Documentation',
+        'easy\_config Documentation',
         'Scott Colby',
         'manual',
     )
@@ -171,7 +171,7 @@ texinfo_documents = [
         'easy_config Documentation',
         author,
         'easy_config',
-        'One line description of project.',
+        'Parse configuration values from files, the environment, and elsewhere all in one place.',
         'Miscellaneous',
     )
 ]
