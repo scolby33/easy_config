@@ -24,7 +24,7 @@ class ExampleConfig(EasyConfig):
 
 def test_unsubclassed_easy_config_raises():
     """Test that a plain EasyConfig can't be instantiated."""
-    with pytest.raises(NotImplementedError):
+    with pytest.raises(TypeError):
         EasyConfig()
 
 

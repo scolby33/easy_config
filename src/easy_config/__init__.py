@@ -73,9 +73,13 @@ class EasyConfig(metaclass=_InheritDataclassForConfig):
     def __init__(self, **_kwargs: Any) -> None:
         """Do not instantiate the base class.
 
-        :raises NotImplementedError: always; this class must be subclassed
+        ``TypeError`` is raised instead of ``NotImplementedError`` to prevent IDEs (namely: PyCharm) from complaining
+        that subclasses have not implemented all abstract methods.
+        See https://github.com/scolby33/easy_config/issues/19
+
+        :raises TypeError: always; this class must be subclassed
         """
-        raise NotImplementedError(f'{self.__class__.__qualname__} must be subclassed')
+        raise TypeError(f'{self.__class__.__qualname__} must be subclassed')
 
     @classmethod
     def _load_file(
