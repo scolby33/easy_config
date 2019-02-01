@@ -82,10 +82,10 @@ class EasyConfig(metaclass=_InheritDataclassForConfig):
         raise TypeError(f'{self.__class__.__qualname__} must be subclassed')
 
     @classmethod
-    def _load_file(
+    def _read_file(
         cls: Type[EasyConfigOrSubclass], config_file: Union[str, Path, Iterable[str]]
     ) -> Dict[str, Any]:
-        """Load configuration values from a file.
+        """Read configuration values from a file.
 
         This method parses ConfigParser-style INI files.
         To parse other formats, subclass EasyConfig and override this method.
@@ -121,13 +121,13 @@ class EasyConfig(metaclass=_InheritDataclassForConfig):
         return values
 
     @classmethod
-    def _load_environment(cls: Type[EasyConfigOrSubclass]) -> Dict[str, Any]:
-        """Load configuration values from the environment.
+    def _read_environment(cls: Type[EasyConfigOrSubclass]) -> Dict[str, Any]:
+        """Read configuration values from the environment.
 
         Configuration values are looked up in the environment by the concatenation of the value name and the NAME class
         variable with an underscore separator.
 
-        For example, the configuration value "number" for an instance with the NAME "myprogram" will be loaded from the
+        For example, the configuration value "number" for an instance with the NAME "myprogram" will be read from the
         environment variable "MYPROGRAM_NUMBER".
 
         :returns: a mapping from string configuration value names to their values
@@ -148,10 +148,10 @@ class EasyConfig(metaclass=_InheritDataclassForConfig):
         return values
 
     @classmethod
-    def _load_dict(
+    def _read_dict(
         cls: Type[EasyConfigOrSubclass], d: Mapping[str, Any]
     ) -> Dict[str, Any]:
-        """Load configuration values from a passed-in mapping.
+        """Read configuration values from a passed-in mapping.
 
         Configuration values are extracted from the input mapping.
         Only keys in the mapping that are valid configuration values names are returned, others are ignored.
@@ -225,20 +225,20 @@ class EasyConfig(metaclass=_InheritDataclassForConfig):
         **kwargs: Any,
     ) -> Iterable[Dict[str, Any]]:
         """Help load the dictionaries in .load()."""
-        yield cls._load_dict(kwargs)
+        yield cls._read_dict(kwargs)
         if _parse_environment:
-            yield cls._load_environment()
+            yield cls._read_environment()
         if _lookup_config_envvar is not None:
             envvar = f'{cls.NAME.upper()}_{_lookup_config_envvar.upper()}'
             file_name = os.environ.get(envvar)
             if file_name:
-                yield cls._load_file(file_name)
+                yield cls._read_file(file_name)
         if _additional_files:
             for files in _additional_files:
-                yield cls._load_file(files)
+                yield cls._read_file(files)
         if _parse_files and cls.FILES:
             for file_paths in reversed(cls.FILES):
-                yield cls._load_file(file_paths)
+                yield cls._read_file(file_paths)
 
     def dump(self, fp: TextIO) -> None:
         """Serialize all current configuration values to fp as a ConfigParser-style INI.
