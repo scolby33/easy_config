@@ -135,13 +135,15 @@ class EasyConfig(metaclass=_InheritDataclassForConfig):
         values = {}
         for field in dataclasses.fields(cls):
             prefixed_field_name = f'{cls.NAME}_{field.name}'.upper()
-            if prefixed_field_name in os.environ:
+            try:
                 if field.type is bool:
                     values[field.name] = field.type(
                         strtobool(os.environ[prefixed_field_name])
                     )
                 else:
                     values[field.name] = field.type(os.environ[prefixed_field_name])
+            except KeyError:  # the variable was not in the environment
+                pass
 
         return values
 
