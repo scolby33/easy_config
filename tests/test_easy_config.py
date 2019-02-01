@@ -24,8 +24,9 @@ class ExampleConfig(EasyConfig):
 
 def test_unsubclassed_easy_config_raises():
     """Test that a plain EasyConfig can't be instantiated."""
-    with pytest.raises(TypeError):
+    with pytest.raises(TypeError) as excinfo:
         EasyConfig()
+    assert str(excinfo.value) == 'EasyConfig must be subclassed'
 
 
 def test_read_file(example_ini):
