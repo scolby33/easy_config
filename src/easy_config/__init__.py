@@ -161,13 +161,13 @@ class EasyConfig(metaclass=_InheritDataclassForConfig):
 
     @classmethod
     def load(
-            cls: Type[EasyConfigOrSubclass],
-            _additional_files: Optional[Iterable[Union[str, Path, TextIO]]] = None,
-            *,
-            _parse_files: bool = True,
-            _parse_environment: bool = True,
-            _lookup_config_envvar: Optional[str] = None,
-            **kwargs: Any,
+        cls: Type[EasyConfigOrSubclass],
+        _additional_files: Optional[Iterable[Union[str, Path, TextIO]]] = None,
+        *,
+        _parse_files: bool = True,
+        _parse_environment: bool = True,
+        _lookup_config_envvar: Optional[str] = None,
+        **kwargs: Any,
     ) -> EasyConfigOrSubclass:
         """Load configuration values from multiple locations and create a new instance of the configuration class with those values.
 
@@ -190,13 +190,15 @@ class EasyConfig(metaclass=_InheritDataclassForConfig):
 
         :returns: an instance of the configuration class loaded with the parsed values
         """
-        values = ChainMap(*cls._load_helper(
-            _additional_files=_additional_files,
-            _parse_files=_parse_files,
-            _parse_environment=_parse_environment,
-            _lookup_config_envvar=_lookup_config_envvar,
-            **kwargs
-        ))
+        values = ChainMap(
+            *cls._load_helper(
+                _additional_files=_additional_files,
+                _parse_files=_parse_files,
+                _parse_environment=_parse_environment,
+                _lookup_config_envvar=_lookup_config_envvar,
+                **kwargs,
+            )
+        )
 
         try:
             return cls(**values)
@@ -208,13 +210,13 @@ class EasyConfig(metaclass=_InheritDataclassForConfig):
 
     @classmethod
     def _load_helper(
-            cls: Type[EasyConfigOrSubclass],
-            _additional_files: Optional[Iterable[Union[str, Path, TextIO]]] = None,
-            *,
-            _parse_files: bool = True,
-            _parse_environment: bool = True,
-            _lookup_config_envvar: Optional[str] = None,
-            **kwargs: Any,
+        cls: Type[EasyConfigOrSubclass],
+        _additional_files: Optional[Iterable[Union[str, Path, TextIO]]] = None,
+        *,
+        _parse_files: bool = True,
+        _parse_environment: bool = True,
+        _lookup_config_envvar: Optional[str] = None,
+        **kwargs: Any,
     ) -> Iterable[Dict[str, Any]]:
         """Help load the dictionaries in .load()."""
         yield cls._load_dict(kwargs)

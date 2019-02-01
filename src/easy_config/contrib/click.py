@@ -9,9 +9,7 @@ import click
 
 from easy_config import EasyConfig
 
-__all__ = [
-    'args_from_config',
-]
+__all__ = ['args_from_config']
 
 # declaring types for the decorator
 # https://mypy.readthedocs.io/en/stable/generics.html#declaring-decorators
@@ -28,7 +26,9 @@ def args_from_config(cls: Type[EasyConfig]) -> Callable[[F], F]:  # noqa: D202
             if field.default is dataclasses.MISSING:
                 wrapper = click.argument(field.name, type=field.type)
             else:
-                wrapper = click.option(f'--{field.name}', type=field.type, default=field.default)
+                wrapper = click.option(
+                    f'--{field.name}', type=field.type, default=field.default
+                )
 
             command = wrapper(command)
 
