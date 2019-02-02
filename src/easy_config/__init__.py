@@ -12,6 +12,7 @@ from pathlib import Path
 from typing import (
     Any,
     Dict,
+    Generator,
     Iterable,
     List,
     Mapping,
@@ -223,7 +224,7 @@ class EasyConfig(metaclass=_InheritDataclassForConfig):
         _parse_environment: bool = True,
         _lookup_config_envvar: Optional[str] = None,
         **kwargs: Any,
-    ) -> Iterable[Dict[str, Any]]:
+    ) -> Generator[Dict[str, Any], None, None]:
         """Help load the dictionaries in .load()."""
         yield cls._read_dict(kwargs)
         if _parse_environment:
