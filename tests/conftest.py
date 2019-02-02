@@ -21,6 +21,19 @@ def example_ini(tmpdir_factory) -> Path:
     return Path(example_ini_path)
 
 
+@pytest.fixture(scope='session')
+def bad_typed_ini(tmpdir_factory) -> Path:
+    """Create an example INI configuration file with a wrong-typed value.
+
+    :returns: the path to the example INI
+    """
+    example_ini_contents = """[MyProgram]\nnumber = apple"""
+    example_ini_path = tmpdir_factory.mktemp('config').join('bad_typed.ini')
+    with open(example_ini_path, 'w') as f:
+        f.write(example_ini_contents)
+    return Path(example_ini_path)
+
+
 @pytest.fixture(scope='function')
 def example_env():
     """Add example values to the environment."""
@@ -29,6 +42,14 @@ def example_env():
     yield  # cleanup of new environment variables is necessary
     del os.environ['MYPROGRAM_NUMBER']
     del os.environ['MYPROGRAM_FLAG']
+
+
+@pytest.fixture(scope='function')
+def bad_typed_env():
+    """Add a badly typed value to the environment."""
+    os.environ['MYPROGRAM_NUMBER'] = 'apple'
+    yield
+    del os.environ['MYPROGRAM_NUMBER']
 
 
 @pytest.fixture(scope='function')

@@ -7,7 +7,7 @@ from io import StringIO
 
 import pytest
 
-from easy_config import EasyConfig
+from easy_config import ConfigValueCoercionError, EasyConfig
 
 
 class ExampleConfig(EasyConfig):
@@ -113,6 +113,18 @@ def test_load_from_env_missing(example_config_env_missing):
 def test_read_dict():
     """Test EasyConfig._read_dict."""
     assert ExampleConfig._read_dict({'number': '3', 'unused': 'foo'}) == {'number': 3}
+
+
+def test_bad_reads(bad_typed_ini, bad_typed_env):
+    """Test EasyConfig._read_* methods with bad (wrongly typed) input values."""
+    with pytest.raises(ConfigValueCoercionError):
+        ExampleConfig._read_file(bad_typed_ini)
+
+    with pytest.raises(ConfigValueCoercionError):
+        ExampleConfig._read_environment()
+
+    with pytest.raises(ConfigValueCoercionError):
+        ExampleConfig._read_dict({'number': 'apple'})
 
 
 def test_load(example_ini, example_env):
