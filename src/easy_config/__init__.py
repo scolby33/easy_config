@@ -106,8 +106,10 @@ class EasyConfig(metaclass=_InheritDataclassForConfig):
         """
         config = configparser.ConfigParser()
         if isinstance(config_file, (str, Path, os.PathLike)):
+            given_path = True
             config.read(config_file)
         else:
+            given_path = False
             config.read_file(config_file)
 
         values = {}
@@ -127,7 +129,7 @@ class EasyConfig(metaclass=_InheritDataclassForConfig):
             except (configparser.NoSectionError, configparser.NoOptionError):
                 pass
             except (TypeError, ValueError) as e:
-                raise ConfigValueCoercionError(f'Could not coerce value for field `{field.name}` to type `{field.type}`') from e
+                raise ConfigValueCoercionError(f'While reading the configuration file `{config_file if given_path else "UNKNWON"}`, could not coerce value for field `{field.name}` to type `{field.type}`')
 
         return values
 
@@ -156,7 +158,7 @@ class EasyConfig(metaclass=_InheritDataclassForConfig):
             except KeyError:  # the variable was not in the environment
                 pass
             except (TypeError, ValueError) as e:
-                raise ConfigValueCoercionError(f'Could not coerce value for field `{field.name}` to type `{field.type}`') from e
+                raise ConfigValueCoercionError(f'While reading environment variable `{prefixed_field_name}`, could not coerce value for field `{field.name}` to type `{field.type}`') from e
 
         return values
 
@@ -178,7 +180,7 @@ class EasyConfig(metaclass=_InheritDataclassForConfig):
                 if field.name in d:
                     values[field.name] = field.type(d[field.name])
             except (TypeError, ValueError) as e:
-                raise ConfigValueCoercionError(f'Could not coerce value for field `{field.name}` to type `{field.type}`') from e
+                raise ConfigValueCoercionError(f'While reading a dictionary, could not coerce value for field `{field.name}` to type `{field.type}`') from e
 
         return values
 
