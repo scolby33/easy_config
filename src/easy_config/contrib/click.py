@@ -42,7 +42,45 @@ def args_from_config(cls: Type[EasyConfig]) -> Callable[[F], F]:  # noqa: D202
 
 
 def config_command(cls: Type[EasyConfig]) -> Callable[[G], F]:  # noqa: D202
-    """Build a decorator based on the given easy config class."""
+    """Build a decorator based on the given easy config class.
+
+    This makes it possible to automatically generate the :py:func:`click.argument` and :py:func:`click.option` entries
+    for a command for a given :py:class:`EasyConfig` class. For example, if you have a python file called ``main.py``:
+
+    .. code-block:: python
+
+        import click
+        from easy_config import EasyConfig
+        from easy_config.contrib.click import config_command
+
+        class ExampleConfig(EasyConfig):
+            FILES = None
+            NAME = 'MyProgram'
+
+            number: int
+            floaty_number: float = 5.0
+
+        @click.command()
+        @config_command(ExampleConfig)
+        def main(example_config: ExampleConfig):
+            click.echo(f'number: {example_config.number}')
+            click.echo(f'floaty_number: {example_config.floaty_number}')
+
+        if __name__ == '__main__':
+            main()
+
+    And run it with ``python main.py``, you will get:
+
+    .. code-block:: sh
+
+        Usage: scratch.py [OPTIONS] NUMBER
+
+          Apply the keyword arguments to the EasyConfig class.
+
+        Options:
+          --floaty_number FLOAT
+          --help                 Show this message and exit.
+    """
 
     def decorate(command: G) -> F:  # noqa: D202
         """Decorate the :mod:`click` command."""
