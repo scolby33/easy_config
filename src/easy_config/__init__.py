@@ -12,6 +12,7 @@ from pathlib import Path
 from typing import (
     Any,
     Dict,
+    Generator,
     Iterable,
     List,
     Mapping,
@@ -46,8 +47,8 @@ EasyConfigOrSubclass = TypeVar('EasyConfigOrSubclass', bound='EasyConfig')
 class _InheritDataclassForConfig(type):
     REQUIRED_CLASS_VARIABLES = ['FILES', 'NAME']
 
-    def __new__(  # noqa: N804
-        mcs, name: str, bases: Tuple[Type[type]], attrs: Dict[str, Any]
+    def __new__(
+        mcs, name: str, bases: Tuple[Type[type]], attrs: Dict[str, Any]  # noqa: N804
     ) -> Type[type]:
         for varname in mcs.REQUIRED_CLASS_VARIABLES:
             if varname not in attrs:
@@ -73,15 +74,19 @@ class EasyConfig(metaclass=_InheritDataclassForConfig):
     def __init__(self, **_kwargs: Any) -> None:
         """Do not instantiate the base class.
 
-        :raises NotImplementedError: always; this class must be subclassed
+        ``TypeError`` is raised instead of ``NotImplementedError`` to prevent IDEs (namely: PyCharm) from complaining
+        that subclasses have not implemented all abstract methods.
+        See https://github.com/scolby33/easy_config/issues/19
+
+        :raises TypeError: always; this class must be subclassed
         """
-        raise NotImplementedError(f'{self.__class__.__qualname__} must be subclassed')
+        raise TypeError(f'{self.__class__.__qualname__} must be subclassed')
 
     @classmethod
-    def _load_file(
+    def _read_file(
         cls: Type[EasyConfigOrSubclass], config_file: Union[str, Path, Iterable[str]]
     ) -> Dict[str, Any]:
-        """Load configuration values from a file.
+        """Read configuration values from a file.
 
         This method parses ConfigParser-style INI files.
         To parse other formats, subclass EasyConfig and override this method.
@@ -117,13 +122,13 @@ class EasyConfig(metaclass=_InheritDataclassForConfig):
         return values
 
     @classmethod
-    def _load_environment(cls: Type[EasyConfigOrSubclass]) -> Dict[str, Any]:
-        """Load configuration values from the environment.
+    def _read_environment(cls: Type[EasyConfigOrSubclass]) -> Dict[str, Any]:
+        """Read configuration values from the environment.
 
         Configuration values are looked up in the environment by the concatenation of the value name and the NAME class
         variable with an underscore separator.
 
-        For example, the configuration value "number" for an instance with the NAME "myprogram" will be loaded from the
+        For example, the configuration value "number" for an instance with the NAME "myprogram" will be read from the
         environment variable "MYPROGRAM_NUMBER".
 
         :returns: a mapping from string configuration value names to their values
@@ -131,21 +136,23 @@ class EasyConfig(metaclass=_InheritDataclassForConfig):
         values = {}
         for field in dataclasses.fields(cls):
             prefixed_field_name = f'{cls.NAME}_{field.name}'.upper()
-            if prefixed_field_name in os.environ:
+            try:
                 if field.type is bool:
                     values[field.name] = field.type(
                         strtobool(os.environ[prefixed_field_name])
                     )
                 else:
                     values[field.name] = field.type(os.environ[prefixed_field_name])
+            except KeyError:  # the variable was not in the environment
+                pass
 
         return values
 
     @classmethod
-    def _load_dict(
+    def _read_dict(
         cls: Type[EasyConfigOrSubclass], d: Mapping[str, Any]
     ) -> Dict[str, Any]:
-        """Load configuration values from a passed-in mapping.
+        """Read configuration values from a passed-in mapping.
 
         Configuration values are extracted from the input mapping.
         Only keys in the mapping that are valid configuration values names are returned, others are ignored.
@@ -187,13 +194,13 @@ class EasyConfig(metaclass=_InheritDataclassForConfig):
 
     @classmethod
     def load(
-            cls: Type[EasyConfigOrSubclass],
-            _additional_files: Optional[Iterable[Union[str, Path, TextIO]]] = None,
-            *,
-            _parse_files: bool = True,
-            _parse_environment: bool = True,
-            _lookup_config_envvar: Optional[str] = None,
-            **kwargs: Any,
+        cls: Type[EasyConfigOrSubclass],
+        _additional_files: Optional[Iterable[Union[str, Path, TextIO]]] = None,
+        *,
+        _parse_files: bool = True,
+        _parse_environment: bool = True,
+        _lookup_config_envvar: Optional[str] = None,
+        **kwargs: Any,
     ) -> EasyConfigOrSubclass:
         """Load configuration values from multiple locations and create a new instance of the configuration class with those values.
 
@@ -216,13 +223,15 @@ class EasyConfig(metaclass=_InheritDataclassForConfig):
 
         :returns: an instance of the configuration class loaded with the parsed values
         """
-        values = ChainMap(*cls._load_helper(
-            _additional_files=_additional_files,
-            _parse_files=_parse_files,
-            _parse_environment=_parse_environment,
-            _lookup_config_envvar=_lookup_config_envvar,
-            **kwargs
-        ))
+        values = ChainMap(
+            *cls._load_helper(
+                _additional_files=_additional_files,
+                _parse_files=_parse_files,
+                _parse_environment=_parse_environment,
+                _lookup_config_envvar=_lookup_config_envvar,
+                **kwargs,
+            )
+        )
 
         try:
             return cls(**values)
@@ -234,29 +243,29 @@ class EasyConfig(metaclass=_InheritDataclassForConfig):
 
     @classmethod
     def _load_helper(
-            cls: Type[EasyConfigOrSubclass],
-            _additional_files: Optional[Iterable[Union[str, Path, TextIO]]] = None,
-            *,
-            _parse_files: bool = True,
-            _parse_environment: bool = True,
-            _lookup_config_envvar: Optional[str] = None,
-            **kwargs: Any,
-    ) -> Iterable[Dict[str, Any]]:
+        cls: Type[EasyConfigOrSubclass],
+        _additional_files: Optional[Iterable[Union[str, Path, TextIO]]] = None,
+        *,
+        _parse_files: bool = True,
+        _parse_environment: bool = True,
+        _lookup_config_envvar: Optional[str] = None,
+        **kwargs: Any,
+    ) -> Generator[Dict[str, Any], None, None]:
         """Help load the dictionaries in .load()."""
-        yield cls._load_dict(kwargs)
+        yield cls._read_dict(kwargs)
         if _parse_environment:
-            yield cls._load_environment()
+            yield cls._read_environment()
         if _lookup_config_envvar is not None:
             envvar = f'{cls.NAME.upper()}_{_lookup_config_envvar.upper()}'
             file_name = os.environ.get(envvar)
             if file_name:
-                yield cls._load_file(file_name)
+                yield cls._read_file(file_name)
         if _additional_files:
             for files in _additional_files:
-                yield cls._load_file(files)
+                yield cls._read_file(files)
         if _parse_files and cls.FILES:
             for file_paths in reversed(cls.FILES):
-                yield cls._load_file(file_paths)
+                yield cls._read_file(file_paths)
 
     def dump(self, fp: TextIO) -> None:
         """Serialize all current configuration values to fp as a ConfigParser-style INI.

@@ -1,5 +1,8 @@
-easy_config |python_versions| |license| |develop_build| |develop_coverage|
-==========================================================================
+easy_config
+===========
+Parse configuration values from files, the environment, and elsewhere all in one place.
+
+|python_versions| |license| |develop_build| |develop_coverage|
 
 .. |python_versions| image:: https://img.shields.io/badge/python->%3D3.6-blue.svg?style=flat-square
     :alt: Supports Python 3.6 and later

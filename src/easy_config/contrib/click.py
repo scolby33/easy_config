@@ -32,7 +32,9 @@ def args_from_config(cls: Type[EasyConfig]) -> Callable[[F], F]:  # noqa: D202
             if field.default is dataclasses.MISSING:
                 wrapper = click.argument(field.name, type=field.type)
             else:
-                wrapper = click.option(f'--{field.name}', type=field.type, default=field.default)
+                wrapper = click.option(
+                    f'--{field.name}', type=field.type, default=field.default, show_default=True
+                )
 
             command = wrapper(command)
 

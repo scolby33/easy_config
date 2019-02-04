@@ -29,7 +29,7 @@ release = '0.2.1-dev'
 # The short X.Y version
 parsed_version = re.match(
     '(?P<major>\d+)\.(?P<minor>\d+)\.(?P<patch>\d+)(?:-(?P<release>[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?(?:\+(?P<build>[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?',
-    release
+    release,
 )
 version = parsed_version.expand('\g<major>.\g<minor>.\g<patch>')
 
@@ -127,15 +127,12 @@ latex_elements = {
     # The paper size ('letterpaper' or 'a4paper').
     #
     # 'papersize': 'letterpaper',
-
     # The font size ('10pt', '11pt' or '12pt').
     #
     # 'pointsize': '10pt',
-
     # Additional stuff for the LaTeX preamble.
     #
     # 'preamble': '',
-
     # Latex figure (float) alignment
     #
     # 'figure_align': 'htbp',
@@ -145,8 +142,13 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, 'easy_config.tex', 'easy\\_config Documentation',
-     'Scott Colby', 'manual'),
+    (
+        master_doc,
+        'easy_config.tex',
+        'easy\_config Documentation',
+        'Scott Colby',
+        'manual',
+    )
 ]
 
 
@@ -154,10 +156,7 @@ latex_documents = [
 
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
-man_pages = [
-    (master_doc, 'easy_config', 'easy_config Documentation',
-     [author], 1)
-]
+man_pages = [(master_doc, 'easy_config', 'easy_config Documentation', [author], 1)]
 
 
 # -- Options for Texinfo output ----------------------------------------------
@@ -166,9 +165,15 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    (master_doc, 'easy_config', 'easy_config Documentation',
-     author, 'easy_config', 'One line description of project.',
-     'Miscellaneous'),
+    (
+        master_doc,
+        'easy_config',
+        'easy_config Documentation',
+        author,
+        'easy_config',
+        'Parse configuration values from files, the environment, and elsewhere all in one place.',
+        'Miscellaneous',
+    )
 ]
 
 
@@ -209,4 +214,3 @@ intersphinx_mapping = {'https://docs.python.org/': None}
 
 # If true, `todo` and `todoList` produce output, else they produce nothing.
 todo_include_todos = True
-

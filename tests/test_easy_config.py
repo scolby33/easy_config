@@ -24,32 +24,33 @@ class ExampleConfig(EasyConfig):
 
 def test_unsubclassed_easy_config_raises():
     """Test that a plain EasyConfig can't be instantiated."""
-    with pytest.raises(NotImplementedError):
+    with pytest.raises(TypeError) as excinfo:
         EasyConfig()
+    assert str(excinfo.value) == 'EasyConfig must be subclassed'
 
 
-def test_load_file(example_ini):
-    """Test EasyConfig._load_file functionality with all permutations of input types."""
+def test_read_file(example_ini):
+    """Test EasyConfig._read_file functionality with all permutations of input types."""
     result = {'number': 3, 'floaty_number': 5.0, 'flag': False, 'word': 'hello'}
-    assert ExampleConfig._load_file(example_ini) == result
-    assert ExampleConfig._load_file(str(example_ini)) == result
+    assert ExampleConfig._read_file(example_ini) == result
+    assert ExampleConfig._read_file(str(example_ini)) == result
     with open(example_ini, 'r') as f:
-        assert ExampleConfig._load_file(f) == result
+        assert ExampleConfig._read_file(f) == result
 
     empty_file = StringIO()
-    assert ExampleConfig._load_file(empty_file) == {}
+    assert ExampleConfig._read_file(empty_file) == {}
 
     empty_section = StringIO('[MyProgram]')
-    assert ExampleConfig._load_file(empty_section) == {}
+    assert ExampleConfig._read_file(empty_section) == {}
 
 
-def test_load_environment(example_env):
-    """Test EasyConfig._load_environment."""
-    assert ExampleConfig._load_environment() == {'number': 4, 'flag': True}
+def test_read_environment(example_env):
+    """Test EasyConfig._read_environment."""
+    assert ExampleConfig._read_environment() == {'number': 4, 'flag': True}
 
 
 def test_load_from_env(example_config_env):
-    """Test EasyConfig._load with _lookup_config_envvar."""
+    """Test EasyConfig.load with _lookup_config_envvar."""
     assert (
         'MYPROGRAM_FLAG' not in os.environ
     ), 'This environment variable should have been cleaned up by pytest'
@@ -109,9 +110,9 @@ def test_load_from_env_missing(example_config_env_missing):
     assert a.word == 'hello'
 
 
-def test_load_dict():
-    """Test EasyConfig._load_dict."""
-    assert ExampleConfig._load_dict({'number': '3', 'unused': 'foo'}) == {'number': 3}
+def test_read_dict():
+    """Test EasyConfig._read_dict."""
+    assert ExampleConfig._read_dict({'number': '3', 'unused': 'foo'}) == {'number': 3}
 
 
 def test_load(example_ini, example_env):
