@@ -177,11 +177,11 @@ class EasyConfig(metaclass=_InheritDataclassForConfig):
         """
         values = {}
         for field in dataclasses.fields(cls):
-            try:
-                if field.name in d:
+            if field.name in d:
+                try:
                     values[field.name] = field.type(d[field.name])
-            except (TypeError, ValueError) as e:
-                raise ConfigValueCoercionError(f'While reading a dictionary, could not coerce value for field `{field.name}` to type `{field.type}`') from e
+                except (TypeError, ValueError) as e:
+                    raise ConfigValueCoercionError(f'While reading a dictionary, could not coerce value for field `{field.name}` to type `{field.type}`') from e
 
         return values
 
