@@ -128,7 +128,7 @@ class EasyConfig(metaclass=_InheritDataclassForConfig):
             except (configparser.NoSectionError, configparser.NoOptionError):
                 pass
             except (TypeError, ValueError) as e:
-                raise ConfigValueCoercionError(f'While reading the configuration file `{config_file if given_path else "UNKNWON"}`, could not coerce value for field `{field.name}` to type `{field.type}`') from e
+                raise ConfigValueCoercionError(f'While reading the configuration file `{config_file if given_path else "<UNKNOWN>"}`, could not coerce value for field `{field.name}` to type `{field.type}`') from e
 
         return values
 
