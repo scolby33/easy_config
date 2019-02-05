@@ -49,8 +49,6 @@ class ConfigValueCoercionError(ValueError):
     Example: field type is ``int`` and the value is ``None`` or ``'apple'``.
     """
 
-    pass
-
 
 class _InheritDataclassForConfig(type):
     REQUIRED_CLASS_VARIABLES = ['FILES', 'NAME']
