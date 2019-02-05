@@ -101,6 +101,7 @@ class EasyConfig(metaclass=_InheritDataclassForConfig):
         which includes open files and TextIO objects.
 
         :returns: a mapping from string configuration value names to their values
+        :raises ConfigValueCoercionError: when an error occurs calling the type constructor on an input value
         """
         config = configparser.ConfigParser()
         if isinstance(config_file, (str, Path, os.PathLike)):
@@ -142,6 +143,7 @@ class EasyConfig(metaclass=_InheritDataclassForConfig):
         environment variable "MYPROGRAM_NUMBER".
 
         :returns: a mapping from string configuration value names to their values
+        :raises ConfigValueCoercionError: when an error occurs calling the type constructor on an input value
         """
         values = {}
         for field in dataclasses.fields(cls):
@@ -171,6 +173,7 @@ class EasyConfig(metaclass=_InheritDataclassForConfig):
 
         :param d: the input mapping of string configuration value names to their values
         :returns: a mapping from string configuration value names to their values
+        :raises ConfigValueCoercionError: when an error occurs calling the type constructor on an input value
         """
         values = {}
         for field in dataclasses.fields(cls):
