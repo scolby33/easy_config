@@ -167,32 +167,6 @@ class EasyConfig(metaclass=_InheritDataclassForConfig):
         }
 
     @classmethod
-    def _load_helper(
-            cls: Type[EasyConfigOrSubclass],
-            _additional_files: Optional[Iterable[Union[str, Path, TextIO]]] = None,
-            *,
-            _parse_files: bool = True,
-            _parse_environment: bool = True,
-            _lookup_config_envvar: Optional[str] = None,
-            **kwargs: Any,
-    ) -> Iterable[Dict[str, Any]]:
-        if _parse_files and cls.FILES:
-            for file_paths in cls.FILES:
-                yield cls._load_file(file_paths)
-        if _additional_files:
-            for files in _additional_files:
-                yield cls._load_file(files)
-        if _lookup_config_envvar is not None:
-            envvar = f'{cls.NAME.upper()}_{_lookup_config_envvar.upper()}'
-            file_name = os.environ.get(envvar)
-            if file_name:
-                yield cls._load_file(file_name)
-        if _parse_environment:
-            yield cls._load_environment()
-
-        yield cls._load_dict(kwargs)
-
-    @classmethod
     def load(
         cls: Type[EasyConfigOrSubclass],
         _additional_files: Optional[Iterable[Union[str, Path, TextIO]]] = None,
