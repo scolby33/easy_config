@@ -2,7 +2,7 @@ easy_config
 ===========
 Parse configuration values from files, the environment, and elsewhere all in one place.
 
-|python_versions| |license| |develop_build| |develop_coverage|
+|python_versions| |license| |develop_build| |develop_coverage| |develop_docs|
 
 .. |python_versions| image:: https://img.shields.io/badge/python->%3D3.6-blue.svg?style=flat-square
     :alt: Supports Python 3.6 and later
@@ -15,6 +15,9 @@ Parse configuration values from files, the environment, and elsewhere all in one
 .. |develop_coverage| image:: https://img.shields.io/codecov/c/github/scolby33/easy_config/develop.svg?style=flat-square
     :target: https://codecov.io/gh/scolby33/easy_config/branch/develop
     :alt: Develop Test Coverage
+.. |develop_docs| image:: https://img.shields.io/readthedocs/easy-config/latest.svg?style=flat-square
+    :target: https://easy-config.readthedocs.io/
+    :alt: Develop Docs Status
 
 Example
 -------
