@@ -48,7 +48,8 @@ Downloading and installing from source goes like this::
     $ cd easy_config
     $ pip install .
 
-If you intend to install in a virtual environment, activate it before running :code:`pip install`.
+If you intend to install in a virtual environment, activate it before running
+:code:`pip install`.
 
 :mod:`easy_config` officially supports Python 3.6 and later.
 
@@ -149,7 +150,8 @@ License
 
 :mod:`easy_config` is licensed under the MIT License, a permissive open-source license.
 
-The full text of the license is available :ref:`here <license>` and in the root of the source code repository.
+The full text of the license is available :ref:`here <license>` and in the root of the
+source code repository.
 
 
 Changelog
@@ -163,7 +165,8 @@ Changelog
 
 :mod:`easy_config` adheres to the Semantic Versioning ("Semver") 2.0.0 versioning standard.
 Details about this versioning scheme can be found on the `Semver website <http://semver.org/spec/v2.0.0.html>`_.
-Versions postfixed with '-dev' are currently under development and those without a postfix are stable releases.
+Versions postfixed with '-dev' are currently under development and those without a
+postfix are stable releases.
 
 You are reading the documents for version |release| of :mod:`easy_config`.
 

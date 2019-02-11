@@ -99,7 +99,7 @@ class EasyConfig(metaclass=_InheritDataclassForConfig):
         To parse other formats, subclass EasyConfig and override this method.
 
         :param config_file: the file from which configuration will be read. Note that this can be an Iterable[str],
-        which includes open files and TextIO objects.
+            which includes open files and TextIO objects.
 
         :returns: a mapping from string configuration value names to their values
         :raises ConfigValueCoercionError: when an error occurs calling the type constructor on an input value
