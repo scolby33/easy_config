@@ -208,7 +208,10 @@ autodoc_member_order = 'bysource'
 # -- Options for intersphinx extension ---------------------------------------
 
 # Example configuration for intersphinx: refer to the Python standard library.
-intersphinx_mapping = {'https://docs.python.org/': None}
+intersphinx_mapping = {
+    'python': ('https://docs.python.org/3', None),
+    'click': ('http://click.pocoo.org/latest/', None),
+}
 
 # -- Options for todo extension ----------------------------------------------
 
