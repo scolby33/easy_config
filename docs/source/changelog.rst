@@ -1,5 +1,20 @@
+.. only:: prerelease
+
+    .. warning:: This is the documentation for a development version of easy_config.
+
+        .. only:: readthedocs
+
+            `Documentation for the Most Recent Stable Version <http://easy-config.readthedocs.io/en/stable/>`_
+
+.. _changelog:
+
+
 Changelog
 =========
+
+:mod:`easy_config` adheres to the Semantic Versioning ("Semver") 2.0.0 versioning standard.
+Details about this versioning scheme can be found on the `Semver website <http://semver.org/spec/v2.0.0.html>`_.
+Versions postfixed with '-dev' are currently under development and those without a postfix are stable releases.
 
 Changes as of 10 February 2019
 
