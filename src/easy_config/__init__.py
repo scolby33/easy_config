@@ -26,7 +26,7 @@ from typing import (
 
 
 # metadata
-__version__ = '0.2.1-dev'
+__version__ = '1.0.0'
 
 __title__ = 'easy_config'
 # keep the __description__ synchronized with the package docstring

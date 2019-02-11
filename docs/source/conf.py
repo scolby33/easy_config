@@ -25,7 +25,7 @@ copyright = '2018 Scott Colby'
 author = 'Scott Colby'
 
 # The full version, including alpha/beta/rc tags
-release = '0.2.1-dev'
+release = '1.0.0'
 # The short X.Y version
 parsed_version = re.match(
     '(?P<major>\d+)\.(?P<minor>\d+)\.(?P<patch>\d+)(?:-(?P<release>[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?(?:\+(?P<build>[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?',
